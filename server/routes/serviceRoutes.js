@@ -1,0 +1,21 @@
+const express = require('express');
+const {
+  getServices,
+  getServiceBySlug,
+  getAllServicesAdmin,
+  createService,
+  updateService,
+  deleteService,
+} = require('../controllers/serviceController');
+const { protect } = require('../middleware/auth');
+
+const router = express.Router();
+
+router.get('/', getServices);
+router.get('/admin/all', protect, getAllServicesAdmin);
+router.get('/:slug', getServiceBySlug);
+router.post('/', protect, createService);
+router.put('/:id', protect, updateService);
+router.delete('/:id', protect, deleteService);
+
+module.exports = router;

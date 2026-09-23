@@ -1,0 +1,19 @@
+<svg width="48" height="48" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldFav" x1="6" y1="4" x2="46" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0284C7"/>
+      <stop offset="0.5" stop-color="#1677FF"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </linearGradient>
+    <linearGradient id="facetFav" x1="12" y1="10" x2="40" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <path d="M26 3L45 12V28C45 38.5 36.8 47.4 26 50C15.2 47.4 7 38.5 7 28V12L26 3Z" fill="url(#shieldFav)" stroke="#38BDF8" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M26 6L10 13.5V26L25 26V7L26 6Z" fill="url(#facetFav)" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.6"/>
+  <path d="M26 6L42 13.5V26L27 26V7L26 6Z" fill="url(#facetFav)" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8"/>
+  <path d="M13 18L33 6M11 29L39 15M17 41L43 27" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.85"/>
+  <path d="M44 4C44 7 41.5 9 39 9C41.5 9 44 11 44 14C44 11 46.5 9 49 9C46.5 9 44 7 44 4Z" fill="#38BDF8"/>
+  <circle cx="44" cy="9" r="1.5" fill="#FFFFFF"/>
+</svg>

@@ -1,0 +1,23 @@
+# Render.com deployment blueprint for the API.
+# Push this repo to GitHub, then in Render: New -> Blueprint -> select repo.
+services:
+  - type: web
+    name: glass-cleaning-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        sync: false
