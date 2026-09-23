@@ -59,8 +59,28 @@ if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
 app.use('/api', apiLimiter);
 
-// Health check
-app.get('/api/health', (req, res) => res.json({ success: true, message: 'API is running' }));
+// Root endpoint & Health checks (for Render health checks, browser tests & uptime monitoring)
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Professional Glass Cleaning Service API is live and operational.',
+    environment: process.env.NODE_ENV || 'production',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      services: '/api/services',
+      locations: '/api/locations',
+      reviews: '/api/reviews',
+      faqs: '/api/faqs',
+      enquiries: '/api/enquiries',
+      businessInfo: '/api/business-info',
+      seo: '/api/seo',
+    },
+  });
+});
+
+app.get('/health', (req, res) => res.status(200).json({ success: true, message: 'Server is healthy' }));
+app.get('/api/health', (req, res) => res.status(200).json({ success: true, message: 'API is running' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
