@@ -26,7 +26,7 @@ export const FALLBACK_SERVICES = [
       'Final inspection ensuring zero haze, streaks, or water drips',
     ],
     icon: 'Sparkles',
-    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80',
     beforeAfterImages: {
       before: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
       after: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
@@ -152,7 +152,7 @@ export const FALLBACK_SERVICES = [
       'Safety testing and load cycling for effortless movement',
     ],
     icon: 'Hammer',
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Inspection fee adjusted against final repair invoice.',
     faqs: [
       {
@@ -191,7 +191,7 @@ export const FALLBACK_SERVICES = [
       'Final rinse and refilling readiness check',
     ],
     icon: 'Waves',
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Transparent pricing based on tank capacity in liters (500L, 1000L, 2000L, 5000L+).',
     faqs: [
       {
@@ -229,7 +229,7 @@ export const FALLBACK_SERVICES = [
       'Screen wipe-down and reinstallation',
     ],
     icon: 'Maximize2',
-    image: 'https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Available as per-window rate or whole-house package.',
     faqs: [
       {
@@ -531,7 +531,7 @@ export const FALLBACK_SERVICES = [
       'Quote and scheduling for permanent custom glass panel if needed',
     ],
     icon: 'AlertTriangle',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Transparent emergency service pricing quoted upfront upon initial call.',
     faqs: [
       {

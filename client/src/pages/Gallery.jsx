@@ -15,7 +15,7 @@ const DEFAULT_GALLERY = [
   {
     title: 'High-Rise Balcony Glass Cleaning',
     category: 'Glass Cleaning',
-    imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80',
     alt: 'Crystal clear residential balcony glass cleaning in Zirakpur society',
     isDemo: true,
   },
@@ -29,14 +29,14 @@ const DEFAULT_GALLERY = [
   {
     title: 'Commercial Glass Door Hardware & Hinge Repair',
     category: 'Glass Repair',
-    imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80',
     alt: 'Technician aligning patch fitting and floor spring on glass door in Chandigarh',
     isDemo: true,
   },
   {
     title: 'Overhead Water Tank High-Pressure Wash',
     category: 'Water Tank Cleaning',
-    imageUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?auto=format&fit=crop&w=800&q=80',
     alt: 'High pressure hygienic water tank cleaning in Mohali',
     isDemo: true,
   },
