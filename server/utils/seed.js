@@ -39,10 +39,10 @@ const services = [
       'Final inspection ensuring zero haze, streaks, or water drips',
     ],
     icon: 'Sparkles',
-    image: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/glass-cleaning.jpg',
     beforeAfterImages: {
-      before: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
-      after: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80',
+      before: '/images/services/window-glass-cleaning.jpg',
+      after: '/images/services/glass-cleaning.jpg',
       label: 'Glass Panel Restoration',
     },
     pricingNote: 'Custom quote based on square footage, accessibility, and glass condition.',
@@ -86,7 +86,7 @@ const services = [
       'Functional load testing and final alignment verification',
     ],
     icon: 'Wrench',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/sgpc-repairing.jpg',
     pricingNote: 'Transparent pricing provided following physical inspection.',
     faqs: [
       {
@@ -129,11 +129,11 @@ const services = [
       'Professional joint tooling for a sleek, watertight contour',
     ],
     icon: 'Droplet',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/silicone-repair.jpg',
     beforeAfterImages: {
-      before: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-      after: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
-      label: 'Silicone Joint Restoration',
+      before: '/images/services/window-glass-cleaning.jpg',
+      after: '/images/services/glass-cleaning.jpg',
+      label: 'Glass Panel Restoration',
     },
     pricingNote: 'Priced per running meter/joint or flat-rate for complete bathroom/window units.',
     faqs: [
@@ -177,7 +177,7 @@ const services = [
       'Safety testing and load cycling for effortless movement',
     ],
     icon: 'Hammer',
-    image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/glass-repair.jpg',
     pricingNote: 'Inspection fee adjusted against final repair invoice.',
     faqs: [
       {
@@ -217,7 +217,7 @@ const services = [
       'Final rinse and refilling readiness check',
     ],
     icon: 'Waves',
-    image: 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/water-tank-cleaning.jpg',
     pricingNote: 'Transparent pricing based on tank capacity in liters (500L, 1000L, 2000L, 5000L+).',
     faqs: [
       {
@@ -260,7 +260,7 @@ const services = [
       'Screen wipe-down and reinstallation',
     ],
     icon: 'Maximize2',
-    image: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/window-glass-cleaning.jpg',
     pricingNote: 'Available as per-window rate or whole-house package.',
     faqs: [
       {
@@ -298,7 +298,7 @@ const services = [
       'High-speed squeegee sweep and edge buffing',
     ],
     icon: 'DoorClosed',
-    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/glass-door-cleaning.jpg',
     pricingNote: 'Flexible one-off or scheduled recurring service.',
     faqs: [
       {
@@ -337,7 +337,7 @@ const services = [
       'Spotless polishing of mirrors, partitions, and balcony railings',
     ],
     icon: 'Home',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/residential-glass-cleaning.jpg',
     pricingNote: 'Flat-rate transparent packages for standard apartment and kothi layouts.',
     faqs: [
       {
@@ -376,7 +376,7 @@ const services = [
       'Supervisor sign-off with facility manager',
     ],
     icon: 'Building2',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/commercial-glass-cleaning.jpg',
     pricingNote: 'Custom contracts and per-visit rates for commercial facilities.',
     faqs: [
       {
@@ -415,7 +415,7 @@ const services = [
       'Anti-static wipe down reducing rapid dust attraction',
     ],
     icon: 'Briefcase',
-    image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/office-glass-cleaning.jpg',
     pricingNote: 'Flexible per-desk, per-cabin, or total square footage monthly retainers.',
     faqs: [
       {
@@ -453,7 +453,7 @@ const services = [
       'Perimeter frame and sill wipe down',
     ],
     icon: 'Store',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/shop-glass-cleaning.jpg',
     pricingNote: 'Attractive weekly, fortnightly, or monthly retail subscription plans.',
     faqs: [
       {
@@ -492,7 +492,7 @@ const services = [
       'Detailed condition summary report provided',
     ],
     icon: 'ShieldCheck',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/glass-maintenance.jpg',
     pricingNote: 'Quarterly, semi-annual, and annual preventive maintenance contracts.',
     faqs: [
       {
@@ -531,7 +531,7 @@ const services = [
       'Uniform concave tooling to channel water away efficiently',
     ],
     icon: 'Layers',
-    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/silicone-sealing.jpg',
     pricingNote: 'Priced per running meter/foot with bulk discounts for full building envelopes.',
     faqs: [
       {
@@ -570,7 +570,7 @@ const services = [
       'Quote and scheduling for permanent custom glass panel if needed',
     ],
     icon: 'AlertTriangle',
-    image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=800&q=80',
+    image: '/images/services/emergency-glass-repair.jpg',
     pricingNote: 'Transparent emergency service pricing quoted upfront upon initial call.',
     faqs: [
       {

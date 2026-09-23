@@ -40,8 +40,8 @@ export default function BeforeAfterSlider({
   const handleMouseUp = () => setIsDragging(false);
 
   // High quality realistic images for the comparison if not provided
-  const fallbackBefore = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80'; // Dusty window pane
-  const fallbackAfter = 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=900&q=80'; // Sparkling squeegee clean window
+  const fallbackBefore = '/images/services/window-glass-cleaning.jpg'; // Before squeegee soapy window
+  const fallbackAfter = '/images/services/glass-cleaning.jpg'; // Spotless clean window // Sparkling squeegee clean window
 
   const currentBefore = beforeImage || fallbackBefore;
   const currentAfter = afterImage || fallbackAfter;
