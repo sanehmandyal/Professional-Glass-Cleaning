@@ -40,8 +40,8 @@ export default function BeforeAfterSlider({
   const handleMouseUp = () => setIsDragging(false);
 
   // High quality realistic images for the comparison if not provided
-  const fallbackBefore = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80'; // Dusty dusty window
-  const fallbackAfter = 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=900&q=80'; // Sparkling clean window
+  const fallbackBefore = 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=900&q=80'; // Dusty window pane
+  const fallbackAfter = 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=900&q=80'; // Sparkling squeegee clean window
 
   const currentBefore = beforeImage || fallbackBefore;
   const currentAfter = afterImage || fallbackAfter;

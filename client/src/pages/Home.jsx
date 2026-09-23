@@ -175,7 +175,7 @@ export default function Home() {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden glass-panel p-2 shadow-glass-lg border border-white">
                 <img
-                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
+                  src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80"
                   alt="Professional technician cleaning large architectural glass windows in Zirakpur"
                   className="w-full h-80 sm:h-[420px] object-cover rounded-2xl"
                   width="600"
