@@ -21,42 +21,71 @@ const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
-connectDB();
+// Connect DB & Bootstrap
+connectDB().then(async () => {
+  try {
+    const Admin = require('./models/Admin');
+    const count = await Admin.countDocuments();
+    if (count === 0) {
+      const email = (process.env.ADMIN_EMAIL || 'admin@professionalglasscleaning.com').toLowerCase().trim();
+      const password = process.env.ADMIN_PASSWORD || 'Admin@123456';
+      await Admin.create({
+        name: 'Primary Admin',
+        email,
+        password,
+        role: 'superadmin',
+      });
+      console.log(`[BOOTSTRAP] Initial admin account created: ${email}`);
+    }
+  } catch (err) {
+    console.error('[BOOTSTRAP ERROR]', err.message);
+  }
+});
 
-// Security & core middleware
-app.use(helmet());
+// Security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://professional-glass-cleaning.vercel.app',
-  ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
-];
+// Comprehensive, robust CORS configuration
+const cleanOrigin = (url) => (url ? url.trim().replace(/\/+$/, '') : '');
 
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    // Echo the exact requesting origin (sanitized without trailing slash)
+    res.setHeader('Access-Control-Allow-Origin', cleanOrigin(origin));
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  // Respond immediately to OPTIONS preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
+// Enable standard cors middleware as well
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, server-to-server)
-      if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app') ||
-        process.env.NODE_ENV !== 'production'
-      ) {
-        return callback(null, true);
-      }
-      callback(null, true); // Permissive fallback to prevent breaking cross-domain requests
-    },
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
   })
 );
-app.use(express.json({ limit: '1mb' }));
+
+app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 
 // General API rate limiter
-const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
+const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 500 });
 app.use('/api', apiLimiter);
 
 // Root endpoint & Health checks (for Render health checks, browser tests & uptime monitoring)

@@ -11,6 +11,7 @@ import {
   Settings,
   Search,
   ExternalLink,
+  KeyRound,
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -24,6 +25,7 @@ const links = [
   { to: '/admin/faqs', label: 'FAQs', icon: HelpCircle },
   { to: '/admin/seo', label: 'SEO Settings', icon: Search },
   { to: '/admin/business-info', label: 'Business Info', icon: Settings },
+  { to: '/admin/settings', label: 'Password & Security', icon: KeyRound },
 ];
 
 export default function AdminSidebar({ onClose }) {

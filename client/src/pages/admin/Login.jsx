@@ -95,9 +95,25 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="pt-2 text-center border-t border-slate-100">
+        <div className="pt-2 text-center border-t border-slate-100 space-y-2">
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-left text-[11px] text-slate-600 flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-navy-900">Default Admin Account</p>
+              <p className="text-slate-500 font-mono text-[10px]">admin@professionalglasscleaning.com</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin@professionalglasscleaning.com');
+                setPassword('Admin@123456');
+              }}
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 hover:bg-brand-100 border border-brand-200 cursor-pointer"
+            >
+              Fill
+            </button>
+          </div>
           <p className="text-[11px] text-slate-400">
-            🔒 Secure JWT encrypted authentication.
+            🔒 Secure JWT encrypted operations access.
           </p>
         </div>
       </div>

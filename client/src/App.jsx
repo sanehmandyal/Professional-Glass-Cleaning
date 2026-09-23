@@ -26,6 +26,7 @@ import GalleryAdmin from './pages/admin/GalleryAdmin';
 import FaqsAdmin from './pages/admin/FaqsAdmin';
 import SEOAdmin from './pages/admin/SEOAdmin';
 import BusinessInfoAdmin from './pages/admin/BusinessInfoAdmin';
+import SettingsAdmin from './pages/admin/SettingsAdmin';
 
 export default function App() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
         <Route path="faqs" element={<FaqsAdmin />} />
         <Route path="seo" element={<SEOAdmin />} />
         <Route path="business-info" element={<BusinessInfoAdmin />} />
+        <Route path="settings" element={<SettingsAdmin />} />
       </Route>
     </Routes>
   );
