@@ -114,7 +114,7 @@ export const FALLBACK_SERVICES = [
       'Professional joint tooling for a sleek, watertight contour',
     ],
     icon: 'Droplet',
-    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Priced per running meter/joint or flat-rate for complete bathroom/window units.',
     faqs: [
       {
@@ -493,7 +493,7 @@ export const FALLBACK_SERVICES = [
       'Uniform concave tooling to channel water away efficiently',
     ],
     icon: 'Layers',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
     pricingNote: 'Priced per running meter/foot with bulk discounts for full building envelopes.',
     faqs: [
       {
