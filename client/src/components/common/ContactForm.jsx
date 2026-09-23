@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiClient from '../../services/api';
 import { Send, CheckCircle, AlertCircle, Phone, Calendar, MapPin, User, MessageSquare, Briefcase } from 'lucide-react';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const SERVICE_OPTIONS = [
   'Professional Glass Cleaning',
@@ -98,7 +96,7 @@ export default function ContactForm({
         message: formData.message.trim(),
       };
 
-      const res = await axios.post(`${API_BASE_URL}/enquiries`, payload);
+      const res = await apiClient.post('/enquiries', payload);
       if (res.data && res.data.success) {
         setSubmitStatus('success');
         setResponseMsg('Thank you. Your enquiry has been received. We will contact you shortly.');

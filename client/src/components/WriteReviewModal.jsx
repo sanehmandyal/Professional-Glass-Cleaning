@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Star, X, CheckCircle2, ShieldCheck, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../services/api';
 
 const SERVICES_LIST = [
   'Professional Glass Cleaning',
@@ -63,8 +63,7 @@ export default function WriteReviewModal({ isOpen, onClose, onReviewSubmitted })
 
     try {
       setIsSubmitting(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const response = await axios.post(`${apiUrl}/reviews`, {
+      const response = await apiClient.post('/reviews', {
         name: name.trim(),
         rating: Number(rating),
         service,

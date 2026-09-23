@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star, CheckCircle, MessageSquare, Plus, ThumbsUp, ShieldCheck, MapPin, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../services/api';
 import { FALLBACK_REVIEWS } from '../data/fallbackData';
 import WriteReviewModal from './WriteReviewModal';
 
@@ -17,8 +17,7 @@ export default function ReviewsSection({ title = 'Verified Customer Reviews', su
   const fetchReviews = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const res = await axios.get(`${apiUrl}/reviews`);
+      const res = await apiClient.get('/reviews');
       if (res.data?.success && res.data.data?.length > 0) {
         setReviews(res.data.data);
       }
