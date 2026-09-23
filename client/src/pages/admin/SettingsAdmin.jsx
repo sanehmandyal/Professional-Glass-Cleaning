@@ -107,7 +107,7 @@ export default function SettingsAdmin() {
       });
 
       if (res.data?.token) {
-        localStorage.setItem('adminToken', res.data.token);
+        localStorage.setItem('gc_admin_token', res.data.token);
       }
 
       setPasswordMsg({
