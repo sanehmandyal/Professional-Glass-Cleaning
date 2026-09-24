@@ -41,7 +41,16 @@ export default function Home() {
     apiClient
       .get('/services')
       .then((res) => {
-        if (res.data?.data?.length > 0) setServices(res.data.data);
+        if (res.data?.data?.length > 0) {
+          const apiMap = new Map(res.data.data.map((s) => [s.slug, s]));
+          const merged = FALLBACK_SERVICES.map((fb) => apiMap.get(fb.slug) || fb);
+          res.data.data.forEach((s) => {
+            if (!FALLBACK_SERVICES.some((fb) => fb.slug === s.slug)) {
+              merged.push(s);
+            }
+          });
+          setServices(merged);
+        }
       })
       .catch(() => {});
 

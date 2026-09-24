@@ -1121,12 +1121,15 @@ async function autoSeedIfEmpty() {
       console.log(`[SEED] Created default admin account: ${email}`);
     }
 
-    // 2. Services
-    const serviceCount = await Service.countDocuments();
-    if (serviceCount === 0) {
-      await Service.insertMany(services);
-      console.log(`[SEED] Auto-seeded ${services.length} services to database.`);
+    // 2. Services - Ensure every standard service exists by slug without overwriting existing edits
+    for (const svc of services) {
+      await Service.findOneAndUpdate(
+        { slug: svc.slug },
+        { $setOnInsert: svc },
+        { upsert: true }
+      );
     }
+    console.log(`[SEED] Verified all 14 standard services in database.`);
 
     // 3. Locations
     const locationCount = await Location.countDocuments();

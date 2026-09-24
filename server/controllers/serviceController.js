@@ -1,9 +1,21 @@
 const Service = require('../models/Service');
+const { services: defaultServices } = require('../utils/seedData');
 
 // @route GET /api/services (public)
 exports.getServices = async (req, res, next) => {
   try {
-    const services = await Service.find({ isActive: true }).sort({ order: 1, createdAt: 1 });
+    let services = await Service.find({ isActive: true }).sort({ order: 1, createdAt: 1 });
+    
+    // If fewer than 14 services exist, auto-insert missing default services so the catalog is always complete
+    if (services.length < defaultServices.length) {
+      for (const def of defaultServices) {
+        if (!services.some((s) => s.slug === def.slug)) {
+          await Service.findOneAndUpdate({ slug: def.slug }, { $setOnInsert: def }, { upsert: true });
+        }
+      }
+      services = await Service.find({ isActive: true }).sort({ order: 1, createdAt: 1 });
+    }
+
     res.json({ success: true, count: services.length, data: services });
   } catch (error) {
     next(error);
