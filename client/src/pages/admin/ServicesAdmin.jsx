@@ -13,9 +13,31 @@ import {
   Image as ImageIcon,
   Check,
   AlertCircle,
+  UploadCloud,
+  Eye,
+  Sliders,
+  Camera,
 } from 'lucide-react';
 import apiClient from '../../services/api';
 import { FALLBACK_SERVICES } from '../../data/fallbackData';
+
+// Curated library of authentic service images available locally
+const PRESET_SERVICE_IMAGES = [
+  { label: 'Glass Cleaning Main', url: '/images/services/glass-cleaning.jpg' },
+  { label: 'SGPC Repairing', url: '/images/services/sgpc-repairing.jpg' },
+  { label: 'Silicone Joint Repair', url: '/images/services/silicone-repair.jpg' },
+  { label: 'Architectural Glass Repair', url: '/images/services/glass-repair.jpg' },
+  { label: 'Water Tank Hygiene', url: '/images/services/water-tank-cleaning.jpg' },
+  { label: 'Window Glass Cleaning', url: '/images/services/window-glass-cleaning.jpg' },
+  { label: 'Glass Door Detailing', url: '/images/services/glass-door-cleaning.jpg' },
+  { label: 'Residential Villa Glass', url: '/images/services/residential-glass-cleaning.jpg' },
+  { label: 'Commercial Facade', url: '/images/services/commercial-glass-cleaning.jpg' },
+  { label: 'Office Glass Partition', url: '/images/services/office-glass-cleaning.jpg' },
+  { label: 'Retail Shop & Showroom', url: '/images/services/shop-glass-cleaning.jpg' },
+  { label: 'Glass Maintenance', url: '/images/services/glass-maintenance.jpg' },
+  { label: 'Silicone Weather Sealing', url: '/images/services/silicone-sealing.jpg' },
+  { label: 'Emergency Glass Repair', url: '/images/services/emergency-glass-repair.jpg' },
+];
 
 const emptyForm = {
   title: '',
@@ -27,7 +49,10 @@ const emptyForm = {
   process: '',
   pricingNote: '',
   icon: 'Sparkles',
-  image: '',
+  image: '/images/services/glass-cleaning.jpg',
+  beforeImage: '',
+  afterImage: '',
+  beforeAfterLabel: 'Before & After Transformation',
   isActive: true,
 };
 
@@ -40,6 +65,13 @@ export default function ServicesAdmin() {
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [feedback, setFeedback] = useState(null);
+
+  // Quick image editor modal state
+  const [quickImageTarget, setQuickImageTarget] = useState(null);
+  const [quickImageUrl, setQuickImageUrl] = useState('');
+  const [quickBeforeUrl, setQuickBeforeUrl] = useState('');
+  const [quickAfterUrl, setQuickAfterUrl] = useState('');
+  const [quickImageLoading, setQuickImageLoading] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -63,11 +95,11 @@ export default function ServicesAdmin() {
   }, []);
 
   const handleSyncDatabase = async () => {
-    if (!window.confirm('This will synchronize all 14 standard services with the database. Continue?')) return;
+    if (!window.confirm('This will synchronize all 14 standard services and images with the database. Continue?')) return;
     setSyncLoading(true);
     try {
       await apiClient.post('/admin/seed-all');
-      setFeedback({ type: 'success', message: 'All 14 services successfully synchronized with database!' });
+      setFeedback({ type: 'success', message: 'All 14 services & images successfully synchronized with database!' });
       load();
     } catch (err) {
       setFeedback({ type: 'error', message: err.response?.data?.message || 'Failed to sync database.' });
@@ -93,7 +125,10 @@ export default function ServicesAdmin() {
       process: Array.isArray(service.process) ? service.process.join('\n') : (service.process || ''),
       pricingNote: service.pricingNote || '',
       icon: service.icon || 'Sparkles',
-      image: service.image || '',
+      image: service.image || '/images/services/glass-cleaning.jpg',
+      beforeImage: service.beforeAfterImages?.before || '',
+      afterImage: service.beforeAfterImages?.after || '',
+      beforeAfterLabel: service.beforeAfterImages?.label || 'Before & After Transformation',
       isActive: service.isActive !== false,
     });
     setEditingId(service._id || service.slug);
@@ -116,6 +151,11 @@ export default function ServicesAdmin() {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean),
+      beforeAfterImages: {
+        before: form.beforeImage || '',
+        after: form.afterImage || '',
+        label: form.beforeAfterLabel || 'Before & After Transformation',
+      },
     };
 
     try {
@@ -125,7 +165,7 @@ export default function ServicesAdmin() {
       } else {
         await apiClient.post('/services', payload);
       }
-      setFeedback({ type: 'success', message: `Service "${form.title}" saved successfully!` });
+      setFeedback({ type: 'success', message: `Service "${form.title}" saved with updated image and details!` });
       setForm(emptyForm);
       setEditingId(null);
       setShowForm(false);
@@ -133,6 +173,45 @@ export default function ServicesAdmin() {
     } catch (err) {
       setFeedback({ type: 'error', message: err.response?.data?.message || 'Error saving service' });
     } finally {
+      setTimeout(() => setFeedback(null), 4000);
+    }
+  };
+
+  // Quick image change save handler
+  const handleQuickImageSave = async () => {
+    if (!quickImageTarget) return;
+    setQuickImageLoading(true);
+
+    const isMongoId = quickImageTarget._id && /^[0-9a-fA-F]{24}$/.test(quickImageTarget._id);
+    const payload = {
+      image: quickImageUrl,
+      beforeAfterImages: {
+        before: quickBeforeUrl,
+        after: quickAfterUrl,
+        label: quickImageTarget.beforeAfterImages?.label || 'Before & After Transformation',
+      },
+    };
+
+    try {
+      if (isMongoId) {
+        await apiClient.put(`/services/${quickImageTarget._id}`, payload);
+      } else {
+        // Find existing service and update state
+        setServices((prev) =>
+          prev.map((s) =>
+            (s._id || s.slug) === (quickImageTarget._id || quickImageTarget.slug)
+              ? { ...s, image: quickImageUrl, beforeAfterImages: payload.beforeAfterImages }
+              : s
+          )
+        );
+      }
+      setFeedback({ type: 'success', message: `Image updated for "${quickImageTarget.title}"!` });
+      setQuickImageTarget(null);
+      load();
+    } catch (err) {
+      setFeedback({ type: 'error', message: 'Failed to update service image' });
+    } finally {
+      setQuickImageLoading(false);
       setTimeout(() => setFeedback(null), 4000);
     }
   };
@@ -166,13 +245,13 @@ export default function ServicesAdmin() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-200 inline-block mb-1.5">
-            Catalog Management
+            Services & Photo Media Hub
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
-            Services Catalog ({services.length} Total)
+            Services & Image Management ({services.length} Total)
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Manage all 14 individual service pages, procedures, descriptions, and pricing notes.
+            Update service titles, procedures, pricing, primary showcase images, and Before/After photos directly.
           </p>
         </div>
 
@@ -221,24 +300,176 @@ export default function ServicesAdmin() {
 
       {/* Search & Stats Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-sm">
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search services by title or slug..."
+            placeholder="Search services or images..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
 
-        <div className="text-xs font-medium text-slate-500 self-end sm:self-auto">
-          Showing <span className="font-bold text-navy-900">{filteredServices.length}</span> of{' '}
-          <span className="font-bold text-navy-900">{services.length}</span> services
+        <div className="text-xs font-medium text-slate-500 self-end sm:self-auto flex items-center gap-3">
+          <span className="flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">
+            <Camera className="w-3.5 h-3.5" /> Direct Photo Control
+          </span>
+          <span>
+            Showing <span className="font-bold text-navy-900">{filteredServices.length}</span> of{' '}
+            <span className="font-bold text-navy-900">{services.length}</span> services
+          </span>
         </div>
       </div>
 
-      {/* Service Create / Edit Drawer/Form Modal */}
+      {/* QUICK IMAGE UPDATE MODAL */}
+      {quickImageTarget && (
+        <div
+          className="fixed inset-0 z-50 bg-navy-950/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setQuickImageTarget(null)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 max-w-xl w-full shadow-2xl border border-slate-100 space-y-5 animate-fadeIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="font-bold text-base text-navy-900 flex items-center gap-2">
+                  <Camera className="w-4 h-4 text-brand-500" />
+                  Update Image: {quickImageTarget.title}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Update the primary cover photo or Before/After transformation images.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQuickImageTarget(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Live Preview Box */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-surface-100 p-4 rounded-2xl border border-slate-200">
+              <div>
+                <p className="text-[11px] font-bold text-navy-900 uppercase tracking-wider mb-1.5">
+                  Live Preview:
+                </p>
+                <div className="aspect-video rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative shadow-inner">
+                  <img
+                    src={quickImageUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/services/glass-cleaning.jpg';
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-navy-900">
+                  Primary Image URL (Path or CDN Link)
+                </label>
+                <input
+                  type="text"
+                  value={quickImageUrl}
+                  onChange={(e) => setQuickImageUrl(e.target.value)}
+                  placeholder="https://... or /images/services/..."
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+                <p className="text-[10px] text-slate-500">
+                  Paste any Cloudinary, Imgur, CDN URL, or local image path.
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Presets Selection */}
+            <div>
+              <p className="text-xs font-bold text-navy-900 mb-2">Or Choose from Curated Service Photos:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1 custom-scrollbar">
+                {PRESET_SERVICE_IMAGES.map((preset) => (
+                  <button
+                    key={preset.url}
+                    type="button"
+                    onClick={() => setQuickImageUrl(preset.url)}
+                    className={`p-1.5 rounded-xl border text-left flex items-center gap-2 text-[11px] transition-all cursor-pointer ${
+                      quickImageUrl === preset.url
+                        ? 'border-brand-500 bg-brand-50 text-brand-900 font-bold ring-2 ring-brand-400/20'
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <img
+                      src={preset.url}
+                      alt={preset.label}
+                      className="w-7 h-7 rounded-lg object-cover shrink-0"
+                    />
+                    <span className="truncate">{preset.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Before / After Transformation Option */}
+            <div className="pt-2 border-t border-slate-100">
+              <details className="text-xs">
+                <summary className="font-bold text-navy-900 cursor-pointer hover:text-brand-600 mb-2">
+                  ▸ Configure Before & After Slider Photos (Optional)
+                </summary>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                      Before Image URL
+                    </label>
+                    <input
+                      type="text"
+                      value={quickBeforeUrl}
+                      onChange={(e) => setQuickBeforeUrl(e.target.value)}
+                      placeholder="/images/services/window-glass-cleaning.jpg"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                      After Image URL
+                    </label>
+                    <input
+                      type="text"
+                      value={quickAfterUrl}
+                      onChange={(e) => setQuickAfterUrl(e.target.value)}
+                      placeholder="/images/services/glass-cleaning.jpg"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300"
+                    />
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setQuickImageTarget(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleQuickImageSave}
+                disabled={quickImageLoading}
+                className="px-5 py-2 rounded-xl text-xs font-bold bg-brand-500 hover:bg-brand-600 text-white shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                {quickImageLoading ? 'Saving Photo...' : 'Update & Save Photo'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FULL SERVICE CREATE / EDIT FORM */}
       {showForm && (
         <div className="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-brand-300 bg-white shadow-xl animate-fadeIn">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
@@ -247,7 +478,7 @@ export default function ServicesAdmin() {
                 {editingId === 'new' ? 'Create New Service' : `Edit: ${form.title}`}
               </h2>
               <p className="text-xs text-slate-500">
-                Update the service content displayed on the website and client bookings.
+                Update the service content, descriptions, and media photos.
               </p>
             </div>
             <button
@@ -259,7 +490,7 @@ export default function ServicesAdmin() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-navy-900 mb-1">
@@ -273,7 +504,7 @@ export default function ServicesAdmin() {
                     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                     setForm((prev) => ({ ...prev, title, slug: prev.slug || slug }));
                   }}
-                  placeholder="e.g., High Rise Glass Cleaning"
+                  placeholder="e.g., SGPC Repairing"
                   className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none"
                   required
                 />
@@ -287,10 +518,127 @@ export default function ServicesAdmin() {
                   name="slug"
                   value={form.slug}
                   onChange={handleChange}
-                  placeholder="e.g., high-rise-glass-cleaning"
+                  placeholder="e.g., sgpc-repairing"
                   className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none"
                   required
                 />
+              </div>
+            </div>
+
+            {/* DEDICATED IMAGE MEDIA SECTION */}
+            <div className="p-5 rounded-2xl bg-surface-100 border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Camera className="w-4 h-4 text-brand-600" />
+                  Service Photo & Visual Media
+                </h3>
+                <span className="text-[10px] text-brand-600 font-semibold bg-brand-50 px-2 py-0.5 rounded border border-brand-100">
+                  Live on Public Website
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                {/* Image Live Preview */}
+                <div className="md:col-span-4">
+                  <div className="aspect-video rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative shadow-inner">
+                    <img
+                      src={form.image || '/images/services/glass-cleaning.jpg'}
+                      alt="Service Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/images/services/glass-cleaning.jpg';
+                      }}
+                    />
+                    <div className="absolute bottom-1 right-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded font-mono">
+                      Preview
+                    </div>
+                  </div>
+                </div>
+
+                {/* Image Input & Presets */}
+                <div className="md:col-span-8 space-y-2.5">
+                  <div>
+                    <label className="block text-[11px] font-bold text-navy-900 mb-1">
+                      Primary Image URL / Path *
+                    </label>
+                    <input
+                      name="image"
+                      value={form.image}
+                      onChange={handleChange}
+                      placeholder="/images/services/glass-cleaning.jpg or https://..."
+                      className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-300 bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-600 mb-1.5 uppercase tracking-wider">
+                      Quick Pick Preset Photo:
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar">
+                      {PRESET_SERVICE_IMAGES.map((p) => (
+                        <button
+                          key={p.url}
+                          type="button"
+                          onClick={() => setForm((prev) => ({ ...prev, image: p.url }))}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-medium border transition-colors cursor-pointer ${
+                            form.image === p.url
+                              ? 'bg-brand-500 text-white border-brand-500 font-bold'
+                              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Before/After Section */}
+              <div className="pt-3 border-t border-slate-200">
+                <p className="text-[11px] font-bold text-navy-900 mb-2">
+                  Optional: Before & After Visual Slider Comparison
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-600 mb-1">
+                      Before Image URL
+                    </label>
+                    <input
+                      name="beforeImage"
+                      value={form.beforeImage}
+                      onChange={handleChange}
+                      placeholder="/images/services/window-glass-cleaning.jpg"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-600 mb-1">
+                      After Image URL
+                    </label>
+                    <input
+                      name="afterImage"
+                      value={form.afterImage}
+                      onChange={handleChange}
+                      placeholder="/images/services/glass-cleaning.jpg"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-600 mb-1">
+                      Comparison Label
+                    </label>
+                    <input
+                      name="beforeAfterLabel"
+                      value={form.beforeAfterLabel}
+                      onChange={handleChange}
+                      placeholder="Glass Restoration"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -394,19 +742,6 @@ export default function ServicesAdmin() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-navy-900 mb-1">
-                Image URL (JPG / WebP)
-              </label>
-              <input
-                name="image"
-                value={form.image}
-                onChange={handleChange}
-                placeholder="/images/services/glass-cleaning.jpg"
-                className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none"
-              />
-            </div>
-
             <div className="flex items-center gap-2 pt-2">
               <input
                 type="checkbox"
@@ -444,101 +779,121 @@ export default function ServicesAdmin() {
       {loading ? (
         <div className="py-12 text-center">
           <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p className="text-xs font-medium text-slate-500">Loading services catalog...</p>
+          <p className="text-xs font-medium text-slate-500">Loading services & photos catalog...</p>
         </div>
       ) : filteredServices.length === 0 ? (
         <div className="p-8 text-center bg-white rounded-2xl border border-slate-200">
           <p className="text-xs font-semibold text-slate-600">No services match your search.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredServices.map((s) => (
             <div
               key={s._id || s.slug}
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-brand-200 transition-all group"
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-brand-300 hover:shadow-md transition-all overflow-hidden group"
             >
-              <div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
-                      {s.image ? (
-                        <img
-                          src={s.image}
-                          alt={s.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/images/services/glass-cleaning.jpg';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-brand-500">
-                          <Sparkles className="w-4 h-4" />
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-navy-900 leading-snug">{s.title}</h3>
-                      <p className="text-[10px] text-slate-400 font-mono">/services/{s.slug}</p>
-                    </div>
-                  </div>
-
+              {/* Card Photo Header */}
+              <div className="relative aspect-video w-full bg-slate-100 overflow-hidden border-b border-slate-100">
+                <img
+                  src={s.image || '/images/services/glass-cleaning.jpg'}
+                  alt={s.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/services/glass-cleaning.jpg';
+                  }}
+                />
+                <div className="absolute top-2.5 left-2.5">
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm ${
                       s.isActive !== false
-                        ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
-                        : 'text-slate-500 bg-slate-100'
+                        ? 'text-emerald-800 bg-emerald-100/90 backdrop-blur-sm border border-emerald-300'
+                        : 'text-slate-600 bg-white/90 backdrop-blur-sm'
                     }`}
                   >
-                    {s.isActive !== false ? 'Active' : 'Draft'}
+                    {s.isActive !== false ? '● Active' : '○ Draft'}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-600 line-clamp-2 mt-2 mb-3">
-                  {s.shortDescription || s.description}
-                </p>
-
-                {/* Badges */}
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {Array.isArray(s.benefits) && s.benefits.length > 0 && (
-                    <span className="text-[10px] font-medium text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
-                      {s.benefits.length} benefits
-                    </span>
-                  )}
-                  {Array.isArray(s.process) && s.process.length > 0 && (
-                    <span className="text-[10px] font-medium text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">
-                      {s.process.length} steps
-                    </span>
-                  )}
+                <div className="absolute top-2.5 right-2.5">
+                  <button
+                    onClick={() => {
+                      setQuickImageTarget(s);
+                      setQuickImageUrl(s.image || '/images/services/glass-cleaning.jpg');
+                      setQuickBeforeUrl(s.beforeAfterImages?.before || '');
+                      setQuickAfterUrl(s.beforeAfterImages?.after || '');
+                    }}
+                    className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-navy-950/80 hover:bg-brand-600 text-white backdrop-blur-sm flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                    title="Change Photo"
+                  >
+                    <Camera className="w-3 h-3" />
+                    <span>Change Photo</span>
+                  </button>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                <a
-                  href={`/services/${s.slug}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1"
-                >
-                  <span>Preview Page</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+              {/* Card Body */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="font-bold text-sm text-navy-900 leading-snug">{s.title}</h3>
+                    <span className="text-[10px] font-mono text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded shrink-0">
+                      {s.icon || 'Sparkles'}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-mono mb-2">/services/{s.slug}</p>
 
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => startEdit(s)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
-                    title="Edit Service"
+                  <p className="text-xs text-slate-600 line-clamp-2 mb-3">
+                    {s.shortDescription || s.description}
+                  </p>
+
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {Array.isArray(s.benefits) && s.benefits.length > 0 && (
+                      <span className="text-[10px] font-medium text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
+                        {s.benefits.length} benefits
+                      </span>
+                    )}
+                    {Array.isArray(s.process) && s.process.length > 0 && (
+                      <span className="text-[10px] font-medium text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">
+                        {s.process.length} steps
+                      </span>
+                    )}
+                    {s.beforeAfterImages?.before && (
+                      <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                        ✦ Before/After
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-3 mt-2 border-t border-slate-100 flex items-center justify-between">
+                  <a
+                    href={`/services/${s.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1"
                   >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => remove(s)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                    title="Delete Service"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    <span>View Page</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => startEdit(s)}
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer"
+                      title="Edit Service Details"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => remove(s)}
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                      title="Delete Service"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

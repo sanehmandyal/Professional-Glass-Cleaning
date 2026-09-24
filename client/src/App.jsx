@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -22,7 +22,6 @@ import EnquiriesAdmin from './pages/admin/EnquiriesAdmin';
 import ReviewsAdmin from './pages/admin/ReviewsAdmin';
 import ServicesAdmin from './pages/admin/ServicesAdmin';
 import LocationsAdmin from './pages/admin/LocationsAdmin';
-import GalleryAdmin from './pages/admin/GalleryAdmin';
 import FaqsAdmin from './pages/admin/FaqsAdmin';
 import SEOAdmin from './pages/admin/SEOAdmin';
 import BusinessInfoAdmin from './pages/admin/BusinessInfoAdmin';
@@ -67,7 +66,7 @@ export default function App() {
         <Route path="reviews" element={<ReviewsAdmin />} />
         <Route path="services" element={<ServicesAdmin />} />
         <Route path="locations" element={<LocationsAdmin />} />
-        <Route path="gallery" element={<GalleryAdmin />} />
+        <Route path="gallery" element={<Navigate to="/admin/services" replace />} />
         <Route path="faqs" element={<FaqsAdmin />} />
         <Route path="seo" element={<SEOAdmin />} />
         <Route path="business-info" element={<BusinessInfoAdmin />} />
