@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Lock, Mail, AlertCircle, ArrowRight, ArrowLeft, ShieldCheck, Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Logo from '../../components/Logo';
 
@@ -27,10 +27,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-navy-950 px-4 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-navy-950 px-4 py-8 relative overflow-hidden">
       {/* Background glow reflections */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      {/* Top Quick Back Button */}
+      <div className="w-full max-w-md mb-4 flex items-center justify-between relative z-10">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold border border-slate-800 transition-colors shadow-sm"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 text-brand-400" />
+          <span>Back to Public Website</span>
+        </Link>
+      </div>
 
       <div className="glass-panel p-8 sm:p-10 rounded-3xl bg-white/95 max-w-md w-full shadow-2xl border border-white/40 relative z-10 space-y-6">
         <div className="flex flex-col items-center text-center">
@@ -95,7 +106,15 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="pt-2 text-center border-t border-slate-100">
+        <div className="pt-2 text-center border-t border-slate-100 space-y-2">
+          <Link
+            to="/"
+            className="text-xs font-semibold text-slate-500 hover:text-brand-600 inline-flex items-center gap-1.5 transition-colors"
+          >
+            <Home className="w-3.5 h-3.5 text-slate-400" />
+            <span>Return to Homepage</span>
+          </Link>
+
           <p className="text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-brand-500" />
             <span>Secure 256-Bit JWT Encrypted Portal Access</span>
