@@ -125,11 +125,17 @@ export default function ServiceDetails() {
             <div className="lg:col-span-5">
               <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-200 relative aspect-video sm:aspect-4/3 bg-slate-100">
                 <img
-                  src={service.image}
+                  src={service.image || `https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80`}
                   alt={`${service.title} in Zirakpur and Mohali`}
                   className="w-full h-full object-cover"
                   width="600"
                   height="450"
+                  onError={(e) => {
+                    const fallback = 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80';
+                    if (e.target.src !== fallback) {
+                      e.target.src = fallback;
+                    }
+                  }}
                 />
               </div>
             </div>

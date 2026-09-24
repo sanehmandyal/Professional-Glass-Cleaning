@@ -55,12 +55,29 @@ const DEFAULT_IMAGES = {
   'emergency-glass-repair': '/images/services/emergency-glass-repair.jpg',
 };
 
+const CDN_FALLBACKS = {
+  'glass-cleaning': 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80',
+  'sgpc-repairing': 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+  'silicone-repair': 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
+  'glass-repair': 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=800&auto=format&fit=crop&q=80',
+  'water-tank-cleaning': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80',
+  'window-glass-cleaning': 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
+  'glass-door-cleaning': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80',
+  'residential-glass-cleaning': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
+  'commercial-glass-cleaning': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80',
+  'office-glass-cleaning': 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&auto=format&fit=crop&q=80',
+  'shop-glass-cleaning': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&auto=format&fit=crop&q=80',
+  'glass-maintenance': 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
+  'silicone-sealing': 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&auto=format&fit=crop&q=80',
+  'emergency-glass-repair': 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+};
+
 export default function ServiceCard({ service, onEnquireClick }) {
   const IconComponent = ICON_MAP[service.icon] || Sparkles;
   const imageSrc =
     service.image && typeof service.image === 'string' && service.image.trim()
       ? service.image
-      : DEFAULT_IMAGES[service.slug] || DEFAULT_IMAGES['glass-cleaning'];
+      : DEFAULT_IMAGES[service.slug] || CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning'];
 
   return (
     <div className="glass-panel glass-panel-hover rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col h-full group border border-white/80">
@@ -74,8 +91,10 @@ export default function ServiceCard({ service, onEnquireClick }) {
           width="400"
           height="250"
           onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = DEFAULT_IMAGES[service.slug] || '/images/services/glass-cleaning.jpg';
+            const fallback = CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning'];
+            if (e.target.src !== fallback) {
+              e.target.src = fallback;
+            }
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-black/20"></div>
