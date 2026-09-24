@@ -22,14 +22,14 @@ export default function ServicesAdmin() {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [syncLoading, setSyncLoading] = useState(false);
 
   const load = () => {
     setLoading(true);
     apiClient
       .get('/services?all=true')
       .then((res) => {
-        if (res.data?.data) {
+        if (res.data?.data && res.data.data.length > 0) {
           setServices(res.data.data);
         } else {
           setServices(FALLBACK_SERVICES);
@@ -62,7 +62,7 @@ export default function ServicesAdmin() {
       image: service.image || '',
       isActive: service.isActive !== false,
     });
-    setEditingId(service._id);
+    setEditingId(service._id || service.slug);
     setShowForm(true);
   };
 
@@ -85,7 +85,8 @@ export default function ServicesAdmin() {
     };
 
     try {
-      if (editingId && editingId !== 'new') {
+      const isMongoId = editingId && /^[0-9a-fA-F]{24}$/.test(editingId);
+      if (isMongoId) {
         await apiClient.put(`/services/${editingId}`, payload);
       } else {
         await apiClient.post('/services', payload);
@@ -99,10 +100,14 @@ export default function ServicesAdmin() {
     }
   };
 
-  const remove = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this service?')) return;
+  const remove = async (service) => {
+    if (!window.confirm(`Are you sure you want to delete "${service.title}"?`)) return;
     try {
-      await apiClient.delete(`/services/${id}`);
+      if (service._id && /^[0-9a-fA-F]{24}$/.test(service._id)) {
+        await apiClient.delete(`/services/${service._id}`);
+      } else {
+        setServices((prev) => prev.filter((s) => (s._id || s.slug) !== (service._id || service.slug)));
+      }
       load();
     } catch (err) {
       alert('Failed to delete service');
@@ -363,7 +368,7 @@ export default function ServicesAdmin() {
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => remove(s._id)}
+                  onClick={() => remove(s)}
                   className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50"
                   title="Delete Service"
                 >

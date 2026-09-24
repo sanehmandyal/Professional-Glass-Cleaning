@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trash2, Plus, Edit2, X, HelpCircle, Save } from 'lucide-react';
 import apiClient from '../../services/api';
+import { FALLBACK_FAQS } from '../../data/fallbackData';
 
 const categories = [
   'General',
@@ -24,9 +25,16 @@ export default function FaqsAdmin() {
     apiClient
       .get('/faqs')
       .then((res) => {
-        if (res.data?.data) setFaqs(res.data.data);
+        if (res.data?.data && res.data.data.length > 0) {
+          setFaqs(res.data.data);
+        } else {
+          setFaqs(FALLBACK_FAQS);
+        }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        setFaqs(FALLBACK_FAQS);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -37,7 +45,8 @@ export default function FaqsAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingId) {
+      const isMongoId = editingId && /^[0-9a-fA-F]{24}$/.test(editingId);
+      if (isMongoId) {
         await apiClient.put(`/faqs/${editingId}`, form);
       } else {
         await apiClient.post('/faqs', form);
@@ -56,14 +65,18 @@ export default function FaqsAdmin() {
       answer: faq.answer || '',
       category: faq.category || 'General',
     });
-    setEditingId(faq._id);
+    setEditingId(faq._id || faq.question);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const remove = async (id) => {
+  const remove = async (faq) => {
     if (!window.confirm('Delete this FAQ?')) return;
     try {
-      await apiClient.delete(`/faqs/${id}`);
+      if (faq._id && /^[0-9a-fA-F]{24}$/.test(faq._id)) {
+        await apiClient.delete(`/faqs/${faq._id}`);
+      } else {
+        setFaqs((prev) => prev.filter((f) => (f._id || f.question) !== (faq._id || faq.question)));
+      }
       load();
     } catch (err) {
       alert('Error deleting FAQ');
@@ -163,7 +176,7 @@ export default function FaqsAdmin() {
       <div className="space-y-3">
         {faqs.map((f) => (
           <div
-            key={f._id}
+            key={f._id || f.question}
             className="glass-panel p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-start justify-between gap-4"
           >
             <div className="space-y-1 flex-1">
@@ -183,7 +196,7 @@ export default function FaqsAdmin() {
                 <Edit2 className="w-4 h-4" />
               </button>
               <button
-                onClick={() => remove(f._id)}
+                onClick={() => remove(f)}
                 className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50"
                 title="Delete FAQ"
               >

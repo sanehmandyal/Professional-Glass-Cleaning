@@ -10,6 +10,7 @@ const connectDB = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const enquiryRoutes = require('./routes/enquiryRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
@@ -18,25 +19,15 @@ const businessInfoRoutes = require('./routes/businessInfoRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const seoRoutes = require('./routes/seoRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const { autoSeedIfEmpty } = require('./utils/seedData');
 
 const app = express();
 
 // Connect DB & Bootstrap
 connectDB().then(async () => {
   try {
-    const Admin = require('./models/Admin');
-    const count = await Admin.countDocuments();
-    if (count === 0) {
-      const email = (process.env.ADMIN_EMAIL || 'admin@professionalglasscleaning.com').toLowerCase().trim();
-      const password = process.env.ADMIN_PASSWORD || 'Admin@123456';
-      await Admin.create({
-        name: 'Primary Admin',
-        email,
-        password,
-        role: 'superadmin',
-      });
-      console.log(`[BOOTSTRAP] Initial admin account created: ${email}`);
-    }
+    await autoSeedIfEmpty();
+    console.log('[BOOTSTRAP] Database verification and auto-seed complete.');
   } catch (err) {
     console.error('[BOOTSTRAP ERROR]', err.message);
   }
@@ -114,6 +105,7 @@ app.get('/api/health', (req, res) => res.status(200).json({ success: true, messa
 // Routes - Mounted on both /api/* and /* for universal client compatibility
 const routes = [
   ['/auth', authRoutes],
+  ['/admin', adminRoutes],
   ['/enquiries', enquiryRoutes],
   ['/services', serviceRoutes],
   ['/locations', locationRoutes],

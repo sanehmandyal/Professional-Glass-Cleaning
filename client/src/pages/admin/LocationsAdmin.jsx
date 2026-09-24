@@ -23,7 +23,7 @@ export default function LocationsAdmin() {
     apiClient
       .get('/locations?all=true')
       .then((res) => {
-        if (res.data?.data) {
+        if (res.data?.data && res.data.data.length > 0) {
           setLocations(res.data.data);
         } else {
           setLocations(FALLBACK_LOCATIONS);
@@ -76,10 +76,11 @@ export default function LocationsAdmin() {
     };
 
     try {
-      if (editingLoc._id === 'new') {
-        await apiClient.post('/locations', payload);
-      } else {
+      const isMongoId = editingLoc?._id && /^[0-9a-fA-F]{24}$/.test(editingLoc._id);
+      if (isMongoId) {
         await apiClient.put(`/locations/${editingLoc._id}`, payload);
+      } else {
+        await apiClient.post('/locations', payload);
       }
       setEditingLoc(null);
       fetchLocations();
@@ -88,10 +89,14 @@ export default function LocationsAdmin() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this service location?')) return;
+  const handleDelete = async (loc) => {
+    if (!window.confirm(`Delete "${loc.name}" service location?`)) return;
     try {
-      await apiClient.delete(`/locations/${id}`);
+      if (loc._id && /^[0-9a-fA-F]{24}$/.test(loc._id)) {
+        await apiClient.delete(`/locations/${loc._id}`);
+      } else {
+        setLocations((prev) => prev.filter((l) => (l._id || l.slug) !== (loc._id || loc.slug)));
+      }
       fetchLocations();
     } catch (err) {
       alert('Error deleting location');
@@ -312,7 +317,7 @@ export default function LocationsAdmin() {
                 </button>
                 {loc.type !== 'Primary Base' && (
                   <button
-                    onClick={() => handleDelete(loc._id)}
+                    onClick={() => handleDelete(loc)}
                     className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50"
                     title="Delete Location"
                   >

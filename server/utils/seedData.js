@@ -1,4 +1,13 @@
-export const FALLBACK_SERVICES = [
+const Admin = require('../models/Admin');
+const Service = require('../models/Service');
+const Location = require('../models/Location');
+const Faq = require('../models/Faq');
+const Gallery = require('../models/Gallery');
+const BusinessInfo = require('../models/BusinessInfo');
+const SEOPage = require('../models/SEOPage');
+const Review = require('../models/Review');
+
+const services = [
   {
     title: 'Professional Glass Cleaning',
     slug: 'glass-cleaning',
@@ -45,6 +54,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Professional Glass Cleaning Service in Zirakpur | Streak-Free Glass Care',
     seoDescription: 'Expert glass cleaning service in Zirakpur, Mohali & Chandigarh. Spotless, streak-free results for homes, offices & showrooms. Call 8539842072.',
+    order: 1,
+    isActive: true,
   },
   {
     title: 'SGPC Repairing',
@@ -86,6 +97,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'SGPC Repairing Services in Zirakpur & Tricity | Professional Glass Cleaning',
     seoDescription: 'Professional SGPC repairing service in Zirakpur, Mohali and Chandigarh. Authentic workmanship and dependable service. Contact 8539842072.',
+    order: 2,
+    isActive: true,
   },
   {
     title: 'Silicone Repair',
@@ -115,15 +128,26 @@ export const FALLBACK_SERVICES = [
     ],
     icon: 'Droplet',
     image: '/images/services/silicone-repair.jpg',
+    beforeAfterImages: {
+      before: '/images/services/window-glass-cleaning.jpg',
+      after: '/images/services/glass-cleaning.jpg',
+      label: 'Glass Panel Restoration',
+    },
     pricingNote: 'Priced per running meter/joint or flat-rate for complete bathroom/window units.',
     faqs: [
       {
         question: 'How long does the new silicone take to cure?',
-        answer: 'Surface skin forms within 30 minutes, with full structural cure taking approximately 24 hours.',
+        answer: 'Surface skin forms within 30 minutes, with full structural cure taking approximately 24 hours. We recommend keeping water away during this period.',
+      },
+      {
+        question: 'Do you use anti-mold silicone for bathrooms?',
+        answer: 'Yes, we use premium bathroom-grade sanitary silicone with built-in fungicides to resist black mold growth in high-humidity areas.',
       },
     ],
     seoTitle: 'Silicone Repair & Sealing in Zirakpur, Mohali | Glass Waterproofing',
     seoDescription: 'Professional silicone repair & replacement in Zirakpur, Mohali & Chandigarh. Waterproof sealant for windows, shower glass & facades. Call 8539842072.',
+    order: 3,
+    isActive: true,
   },
   {
     title: 'Glass Repair',
@@ -162,6 +186,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Glass Repair & Hardware Fixing in Zirakpur, Mohali & Chandigarh',
     seoDescription: 'Reliable glass repair services in Zirakpur, Mohali and Chandigarh. Fixing loose panels, door hinges, floor springs & window fittings. Call 8539842072.',
+    order: 4,
+    isActive: true,
   },
   {
     title: 'Water Tank Cleaning',
@@ -198,9 +224,15 @@ export const FALLBACK_SERVICES = [
         question: 'How often should water tanks be cleaned in Tricity?',
         answer: 'Health authorities recommend thorough cleaning and disinfection every 6 months to prevent microbial growth and sediment contamination.',
       },
+      {
+        question: 'Is the cleaning chemical safe for drinking water?',
+        answer: 'We use non-toxic, food-grade disinfectants followed by thorough high-pressure rinsing so the tank is 100% safe for household water use.',
+      },
     ],
     seoTitle: 'Water Tank Cleaning Services in Zirakpur, Mohali & Chandigarh',
     seoDescription: 'Hygienic water tank cleaning in Zirakpur, Mohali & Chandigarh. Overhead & underground tank deep cleaning & disinfection. Call 8539842072.',
+    order: 5,
+    isActive: true,
   },
   {
     title: 'Window Glass Cleaning',
@@ -239,6 +271,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Window Glass Cleaning in Zirakpur & Mohali | Streak-Free Windows',
     seoDescription: 'Professional window glass cleaning in Zirakpur, Mohali, and Chandigarh. Squeegee finish, track cleaning, residential & commercial. Call 8539842072.',
+    order: 6,
+    isActive: true,
   },
   {
     title: 'Glass Door Cleaning',
@@ -276,6 +310,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Glass Door Cleaning in Zirakpur, Mohali & Chandigarh',
     seoDescription: 'Spotless glass door cleaning for shops, offices, and homes across Zirakpur & Mohali. Remove smudges, stickers & watermarks. Call 8539842072.',
+    order: 7,
+    isActive: true,
   },
   {
     title: 'Residential Glass Cleaning',
@@ -314,6 +350,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Residential Glass Cleaning in Zirakpur, Mohali & Chandigarh',
     seoDescription: 'Premium home & apartment glass cleaning in Zirakpur, Mohali and Chandigarh. Balcony glass, mirrors, windows & shower glass. Call 8539842072.',
+    order: 8,
+    isActive: true,
   },
   {
     title: 'Commercial Glass Cleaning',
@@ -352,6 +390,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Commercial Glass Cleaning in Mohali, Zirakpur & Chandigarh',
     seoDescription: 'Commercial glass facade and window cleaning for corporate offices, retail spaces, and IT parks across Tricity. Call 8539842072 for quotation.',
+    order: 9,
+    isActive: true,
   },
   {
     title: 'Office Glass Cleaning',
@@ -390,6 +430,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Office Glass Partition & Cabin Cleaning in Mohali & Chandigarh',
     seoDescription: 'Expert office glass cleaning in Mohali, Chandigarh & Zirakpur. Cabin partitions, meeting rooms & doors. Call 8539842072 for contract rates.',
+    order: 10,
+    isActive: true,
   },
   {
     title: 'Shop/Showroom Glass Cleaning',
@@ -427,6 +469,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Shop & Showroom Glass Cleaning in Chandigarh, Zirakpur, Mohali',
     seoDescription: 'Spotless retail storefront & showcase glass cleaning in Chandigarh, Zirakpur & Mohali. Boost your storefront appeal. Call 8539842072.',
+    order: 11,
+    isActive: true,
   },
   {
     title: 'Glass Maintenance',
@@ -465,6 +509,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Glass Maintenance & Preventive Care in Zirakpur & Tricity',
     seoDescription: 'Comprehensive glass maintenance contracts in Zirakpur, Mohali & Chandigarh. Hardware checks, silicone audits & deep care. Call 8539842072.',
+    order: 12,
+    isActive: true,
   },
   {
     title: 'Silicone Sealing / Replacement',
@@ -503,6 +549,8 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Silicone Sealing & Replacement in Zirakpur, Mohali & Chandigarh',
     seoDescription: 'Expert silicone replacement & waterproof sealing in Zirakpur, Mohali and Chandigarh. Stop rainwater leaks and drafts. Call 8539842072.',
+    order: 13,
+    isActive: true,
   },
   {
     title: 'Emergency Glass Repair',
@@ -541,10 +589,12 @@ export const FALLBACK_SERVICES = [
     ],
     seoTitle: 'Emergency Glass Repair in Zirakpur, Mohali & Chandigarh | Fast Dispatch',
     seoDescription: 'Urgent emergency glass repair in Zirakpur, Mohali and Chandigarh. Fixing broken doors, loose panels & jammed hardware. Call 8539842072.',
+    order: 14,
+    isActive: true,
   },
 ];
 
-export const FALLBACK_LOCATIONS = [
+const locations = [
   {
     name: 'Zirakpur',
     slug: 'zirakpur',
@@ -554,7 +604,7 @@ export const FALLBACK_LOCATIONS = [
     heroSubtitle:
       'Based in Green Enclave, Zirakpur, we provide local residents and commercial properties with rapid, streak-free glass cleaning, silicone repair, SGPC repairing, and water tank cleaning.',
     description:
-      'As our primary base of operations located at Green Enclave, Zirakpur, we deliver rapid-response, professional glass care across the entire Zirakpur municipal region. With high-rise residential societies like Maya Garden, VIP Road commercial complexes, High Ground kothis, and Chandigarh-Ambala highway showrooms, Zirakpur properties face heavy atmospheric road dust and monsoon rain scaling. Our team is equipped with specialized squeegees, purified water reach systems, anti-mold silicone, and tank disinfection equipment to provide prompt, reliable service throughout Zirakpur.',
+      'As our primary base of operations located at Green Enclave, Zirakpur, we deliver rapid-response, professional glass care across the entire Zirakpur municipal region. With high-rise residential societies like Maya Garden, VIP Road commercial complexes, High Ground kothis, and Chandigarh-Ambala highway showrooms, Zirakpur properties face heavy atmospheric road dust and monsoon rain scaling. Our team is equipped with specialized squeeegees, purified water reach systems, anti-mold silicone, and tank disinfection equipment to provide prompt, reliable service throughout Zirakpur.',
     coverageAreas: [
       'Green Enclave (Home Base)',
       'VIP Road & Maya Garden City',
@@ -598,6 +648,8 @@ export const FALLBACK_LOCATIONS = [
     mapQuery: 'Green Enclave, Zirakpur, Punjab 140603',
     seoTitle: 'Glass Cleaning & Repair Services in Zirakpur | Professional Glass Cleaning',
     seoDescription: 'Professional glass cleaning, glass repair, silicone repair & water tank cleaning in Zirakpur. Base in Green Enclave. Call 8539842072.',
+    order: 1,
+    isActive: true,
   },
   {
     name: 'Mohali',
@@ -646,6 +698,8 @@ export const FALLBACK_LOCATIONS = [
     mapQuery: 'Sahibzada Ajit Singh Nagar, Mohali, Punjab',
     seoTitle: 'Glass Cleaning & Repair Services in Mohali | Professional Glass Cleaning',
     seoDescription: 'Professional glass cleaning, glass repair, silicone repair & water tank cleaning in Mohali (SAS Nagar). Corporate & residential. Call 8539842072.',
+    order: 2,
+    isActive: true,
   },
   {
     name: 'Chandigarh',
@@ -694,6 +748,8 @@ export const FALLBACK_LOCATIONS = [
     mapQuery: 'Chandigarh, India',
     seoTitle: 'Glass Cleaning & Repair Services in Chandigarh | Professional Glass Cleaning',
     seoDescription: 'Expert glass cleaning, silicone repair, glass repair & water tank cleaning in Chandigarh. Serving homes, shops & offices. Call 8539842072.',
+    order: 3,
+    isActive: true,
   },
   {
     name: 'Punjab',
@@ -729,21 +785,28 @@ export const FALLBACK_LOCATIONS = [
     localFaqs: [
       {
         question: 'How can I check if service is available in my Punjab location?',
-        answer: 'Simply call us or message us on WhatsApp at 8539842072 with your location and service requirements.',
+        answer: 'Simply call us or message us on WhatsApp at 8539842072 with your location and service requirements. We will confirm technician availability and scheduling promptly.',
+      },
+      {
+        question: 'Do you take up commercial glass projects outside Tricity?',
+        answer: 'Yes, we undertake scheduled commercial facade cleaning, silicone re-sealing, and tank cleaning for commercial properties across selected Punjab regions.',
       },
     ],
     mapQuery: 'Punjab, India',
     seoTitle: 'Glass Cleaning Services in Punjab | Selected Coverage Areas',
     seoDescription: 'Professional glass cleaning, silicone repair & water tank cleaning in selected areas of Punjab based on service availability. Call 8539842072.',
+    order: 4,
+    isActive: true,
   },
 ];
 
-export const FALLBACK_FAQS = [
+const faqs = [
   {
     question: 'What areas do you provide glass cleaning and repair services in?',
     answer:
       'Our primary base is located at Green Enclave, Zirakpur, Punjab. We provide fast daily service throughout Zirakpur, Mohali (SAS Nagar), Chandigarh (Tricity), and selected nearby areas across Punjab based on availability.',
     category: 'General',
+    order: 1,
     isFeatured: true,
   },
   {
@@ -751,6 +814,7 @@ export const FALLBACK_FAQS = [
     answer:
       'You can call us directly at 8539842072, send a WhatsApp message to +91 8539842072, or fill out the enquiry form on our website. We will discuss your requirement and provide a clear quotation.',
     category: 'Booking & Pricing',
+    order: 2,
     isFeatured: true,
   },
   {
@@ -758,6 +822,7 @@ export const FALLBACK_FAQS = [
     answer:
       'Yes, we provide professional glass cleaning for apartments, flats, independent houses, and villas, covering windows, balcony glass railings, shower partitions, mirrors, and glass doors.',
     category: 'Residential',
+    order: 3,
     isFeatured: true,
   },
   {
@@ -765,6 +830,7 @@ export const FALLBACK_FAQS = [
     answer:
       'Yes, we cater to corporate offices, IT parks, retail shops, automobile showrooms, banks, and hotels with flexible scheduling including early mornings and weekends.',
     category: 'Commercial',
+    order: 4,
     isFeatured: true,
   },
   {
@@ -772,6 +838,7 @@ export const FALLBACK_FAQS = [
     answer:
       'SGPC Repairing is a dedicated repair service provided by our technicians using proper tools, quality materials, and careful alignment techniques for lasting dependability.',
     category: 'Repair Services',
+    order: 5,
     isFeatured: true,
   },
   {
@@ -779,6 +846,7 @@ export const FALLBACK_FAQS = [
     answer:
       'Old silicone degrades due to moisture, UV exposure, and fungus accumulation, causing leaks and drafts. We completely strip the old silicone, sanitize the joint, and apply fresh, neutral-cure anti-fungal architectural silicone for a 100% watertight seal.',
     category: 'Silicone & Sealing',
+    order: 6,
     isFeatured: true,
   },
   {
@@ -786,6 +854,7 @@ export const FALLBACK_FAQS = [
     answer:
       'Our hygienic process includes sludge de-watering, high-pressure rotary jet wall washing, manual grime scrubbing, slurry extraction, and anti-bacterial disinfection to ensure clean, safe domestic water.',
     category: 'Water Tank Cleaning',
+    order: 7,
     isFeatured: true,
   },
   {
@@ -793,6 +862,7 @@ export const FALLBACK_FAQS = [
     answer:
       'Yes, we repair and adjust frameless glass doors by servicing or replacing faulty floor springs, top pivots, patch fittings, and alignment brackets.',
     category: 'Glass Repair',
+    order: 8,
     isFeatured: true,
   },
   {
@@ -800,94 +870,21 @@ export const FALLBACK_FAQS = [
     answer:
       'Yes, for urgent glass hazards or broken door mechanisms, call us directly at 8539842072 for prioritized technician dispatch.',
     category: 'Emergency',
+    order: 9,
     isFeatured: true,
   },
-];
-
-export const FALLBACK_REVIEWS = [
   {
-    _id: 'rev-1',
-    name: 'Gurpreet Singh',
-    rating: 5,
-    service: 'Professional Glass Cleaning',
-    location: 'VIP Road, Zirakpur',
-    comment:
-      'Very punctual and professional team. Cleaned all our 8th-floor balcony glass and large living room windows without a single streak. Highly recommended in Zirakpur!',
-    isApproved: true,
-    isFeatured: true,
-    adminReply: 'Thank you Gurpreet ji! Glad you liked our streak-free glass cleaning service.',
-    createdAt: '2026-03-15T10:30:00.000Z',
-  },
-  {
-    _id: 'rev-2',
-    name: 'Rohit Sharma',
-    rating: 5,
-    service: 'Silicone Repair',
-    location: 'Sector 70, Mohali',
-    comment:
-      'Had persistent water seepage around our master bedroom window frame during rains. Their technician removed the old cracked sealant and applied neat silicone. Zero leaks now.',
-    isApproved: true,
-    isFeatured: true,
-    adminReply: 'Thank you Rohit! Our architectural silicone ensures 100% watertight protection.',
-    createdAt: '2026-03-10T14:15:00.000Z',
-  },
-  {
-    _id: 'rev-3',
-    name: 'Sunita Verma',
-    rating: 5,
-    service: 'Water Tank Cleaning',
-    location: 'Sector 38, Chandigarh',
-    comment:
-      'Thorough 6-stage deep cleaning of our overhead and underground water tanks. They showed before and after pictures inside the tank. Very hygienic and courteous crew.',
-    isApproved: true,
-    isFeatured: true,
-    adminReply: 'Thank you Sunita ji! Safe and clean drinking water is our top priority.',
-    createdAt: '2026-03-05T09:45:00.000Z',
-  },
-  {
-    _id: 'rev-4',
-    name: 'Harmanpreet Kaur',
-    rating: 5,
-    service: 'Glass Door Cleaning',
-    location: 'High Ground, Zirakpur',
-    comment:
-      'Got our showroom entrance glass doors and display counters polished. Completely removed old sticker adhesives and hand marks. Will definitely use again.',
-    isApproved: true,
-    isFeatured: true,
-    adminReply: 'Thank you Harmanpreet! We look forward to assisting your showroom regularly.',
-    createdAt: '2026-02-28T16:20:00.000Z',
-  },
-  {
-    _id: 'rev-5',
-    name: 'Aman Deep',
-    rating: 4,
-    service: 'Glass Repair',
-    location: 'Aerocity, Mohali',
-    comment:
-      'Fixed a wobbling shower cubicle glass panel and adjusted the floor spring on our main glass entrance. Sturdy and smooth operation restored.',
-    isApproved: true,
+    question: 'What payment methods do you accept?',
+    answer:
+      'We accept UPI (Google Pay, PhonePe, Paytm), bank transfers, and cash upon satisfactory completion of service.',
+    category: 'Booking & Pricing',
+    order: 10,
     isFeatured: false,
-    adminReply: 'Thank you Aman! We take structural glass safety very seriously.',
-    createdAt: '2026-02-20T11:10:00.000Z',
-  },
-  {
-    _id: 'rev-6',
-    name: 'Vikas Malhotra',
-    rating: 5,
-    service: 'SGPC Repairing',
-    location: 'Green Enclave, Zirakpur',
-    comment:
-      'Prompt response and proper diagnostic assessment before starting the repair work. Fair pricing and dependable workmanship.',
-    isApproved: true,
-    isFeatured: true,
-    adminReply: 'Thank you Vikas for trusting us with your repair requirement!',
-    createdAt: '2026-02-12T13:00:00.000Z',
   },
 ];
 
-export const FALLBACK_GALLERY = [
+const galleryImages = [
   {
-    _id: 'gal-1',
     title: 'Commercial Facade Glass Cleaning',
     category: 'Commercial Cleaning',
     imageUrl: '/images/gallery/commercial-glass-cleaning-mohali.webp',
@@ -896,7 +893,6 @@ export const FALLBACK_GALLERY = [
     order: 1,
   },
   {
-    _id: 'gal-2',
     title: 'High-Rise Balcony Glass Cleaning',
     category: 'Glass Cleaning',
     imageUrl: '/images/gallery/professional-glass-cleaning-zirakpur.webp',
@@ -905,7 +901,6 @@ export const FALLBACK_GALLERY = [
     order: 2,
   },
   {
-    _id: 'gal-3',
     title: 'Silicone Sealant Replacement on Window Joint',
     category: 'Silicone Repair',
     imageUrl: '/images/gallery/silicone-repair-zirakpur.webp',
@@ -914,7 +909,6 @@ export const FALLBACK_GALLERY = [
     order: 3,
   },
   {
-    _id: 'gal-4',
     title: 'Commercial Glass Door Hardware & Hinge Repair',
     category: 'Glass Repair',
     imageUrl: '/images/gallery/glass-repair-chandigarh.webp',
@@ -923,7 +917,6 @@ export const FALLBACK_GALLERY = [
     order: 4,
   },
   {
-    _id: 'gal-5',
     title: 'Overhead Water Tank High-Pressure Wash',
     category: 'Water Tank Cleaning',
     imageUrl: '/images/gallery/water-tank-cleaning-mohali.webp',
@@ -932,7 +925,6 @@ export const FALLBACK_GALLERY = [
     order: 5,
   },
   {
-    _id: 'gal-6',
     title: 'Retail Showroom Storefront Window Polishing',
     category: 'Commercial Cleaning',
     imageUrl: '/images/gallery/shop-showroom-glass-cleaning-chandigarh.webp',
@@ -941,7 +933,6 @@ export const FALLBACK_GALLERY = [
     order: 6,
   },
   {
-    _id: 'gal-7',
     title: 'Residential Villa French Window Cleaning',
     category: 'Residential Cleaning',
     imageUrl: '/images/gallery/residential-glass-cleaning-zirakpur.webp',
@@ -950,7 +941,6 @@ export const FALLBACK_GALLERY = [
     order: 7,
   },
   {
-    _id: 'gal-8',
     title: 'Corporate Office Glass Partition Care',
     category: 'Commercial Cleaning',
     imageUrl: '/images/gallery/office-glass-cleaning-mohali.webp',
@@ -960,3 +950,275 @@ export const FALLBACK_GALLERY = [
   },
 ];
 
+const seoPages = [
+  {
+    slug: 'home',
+    title: 'Professional Glass Cleaning Service in Zirakpur | Glass Repair & Cleaning',
+    description:
+      'Professional glass cleaning, glass repair, silicone repair, SGPC repairing and water tank cleaning services in Zirakpur, Mohali and Chandigarh. Call 8539842072 for service enquiries.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/',
+    ogTitle: 'Professional Glass Cleaning Service in Zirakpur | Glass Repair & Cleaning',
+    ogDescription:
+      'Professional glass cleaning, glass repair, silicone repair and water tank cleaning in Zirakpur, Mohali and Chandigarh. Call 8539842072.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+  {
+    slug: 'services',
+    title: 'Glass Cleaning & Repair Services | Professional Glass Cleaning',
+    description:
+      'Explore our full range of services: professional glass cleaning, SGPC repairing, silicone repair, glass repair, and water tank cleaning in Zirakpur, Mohali, and Chandigarh.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/services',
+    ogTitle: 'Professional Glass Cleaning & Repair Services | Zirakpur, Mohali, Chandigarh',
+    ogDescription:
+      'Comprehensive glass cleaning, repair, silicone sealing, and water tank hygiene services in Tricity. Contact 8539842072.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+  {
+    slug: 'locations',
+    title: 'Service Areas & Locations | Professional Glass Cleaning Zirakpur',
+    description:
+      'We proudly serve Zirakpur, Mohali, Chandigarh, and selected areas across Punjab with reliable glass cleaning, repair, and water tank cleaning services.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/locations',
+    ogTitle: 'Service Areas: Zirakpur, Mohali, Chandigarh & Punjab',
+    ogDescription:
+      'Find our service coverage across Zirakpur, SAS Nagar Mohali, Chandigarh, and Punjab regions.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+  {
+    slug: 'about',
+    title: 'About Professional Glass Cleaning Service | Zirakpur, Punjab',
+    description:
+      'Learn about Professional Glass Cleaning Service based in Green Enclave, Zirakpur. Providing dependable glass cleaning, repair, silicone work, and tank cleaning in Tricity.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/about',
+    ogTitle: 'About Professional Glass Cleaning Service | Green Enclave, Zirakpur',
+    ogDescription:
+      'Dedicated glass cleaning and repair service provider in Zirakpur, Mohali, and Chandigarh. Call 8539842072.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+  {
+    slug: 'faqs',
+    title: 'Frequently Asked Questions | Professional Glass Cleaning Service',
+    description:
+      'Find clear answers to common questions regarding glass cleaning, glass repair, silicone repair, SGPC repairing, water tank cleaning, pricing, and service areas.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/faqs',
+    ogTitle: 'FAQs - Glass Cleaning & Repair in Zirakpur, Mohali & Chandigarh',
+    ogDescription:
+      'Have questions about glass cleaning or repair? Check our comprehensive FAQ guide or call 8539842072.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+  {
+    slug: 'contact',
+    title: 'Contact Professional Glass Cleaning Service | Zirakpur & Tricity',
+    description:
+      'Get in touch with Professional Glass Cleaning Service in Green Enclave, Zirakpur. Call or WhatsApp 8539842072 for instant enquiries and quotes.',
+    canonicalUrl: 'https://professionalglasscleaningservice.com/contact',
+    ogTitle: 'Contact Professional Glass Cleaning Service | Green Enclave, Zirakpur',
+    ogDescription:
+      'Call or WhatsApp 8539842072 for quick service quotes in Zirakpur, Mohali, and Chandigarh.',
+    ogImage: '/images/og-professional-glass-cleaning.webp',
+    robots: 'index, follow',
+  },
+];
+
+const initialReviews = [
+  {
+    name: 'Gurpreet Singh',
+    rating: 5,
+    service: 'Professional Glass Cleaning',
+    location: 'VIP Road, Zirakpur',
+    comment:
+      'Very punctual and professional team. Cleaned all the 8th-floor balcony glass and large living room windows without a single streak. Highly recommended in Zirakpur!',
+    isApproved: true,
+    isFeatured: true,
+    adminReply: 'Thank you Gurpreet ji! Glad you liked our streak-free glass cleaning service.',
+  },
+  {
+    name: 'Rohit Sharma',
+    rating: 5,
+    service: 'Silicone Repair',
+    location: 'Sector 70, Mohali',
+    comment:
+      'Had persistent water seepage around our master bedroom window frame during rains. Their technician removed the old cracked sealant and applied neat silicone. Zero leaks now.',
+    isApproved: true,
+    isFeatured: true,
+    adminReply: 'Thank you Rohit! Our architectural silicone ensures 100% watertight protection.',
+  },
+  {
+    name: 'Sunita Verma',
+    rating: 5,
+    service: 'Water Tank Cleaning',
+    location: 'Sector 38, Chandigarh',
+    comment:
+      'Thorough 6-stage deep cleaning of our overhead and underground water tanks. They showed before and after pictures inside the tank. Very hygienic and courteous crew.',
+    isApproved: true,
+    isFeatured: true,
+    adminReply: 'Thank you Sunita ji! Safe and clean drinking water is our top priority.',
+  },
+  {
+    name: 'Harmanpreet Kaur',
+    rating: 5,
+    service: 'Glass Door Cleaning',
+    location: 'High Ground, Zirakpur',
+    comment:
+      'Got our showroom entrance glass doors and display counters polished. Completely removed old sticker adhesives and hand marks. Will definitely use again.',
+    isApproved: true,
+    isFeatured: true,
+    adminReply: 'Thank you Harmanpreet! We look forward to assisting your showroom regularly.',
+  },
+  {
+    name: 'Aman Deep',
+    rating: 4,
+    service: 'Glass Repair',
+    location: 'Aerocity, Mohali',
+    comment:
+      'Fixed a wobbling shower cubicle glass panel and adjusted the floor spring on our main glass entrance. Sturdy and smooth operation restored.',
+    isApproved: true,
+    isFeatured: false,
+    adminReply: 'Thank you Aman! We take structural glass safety very seriously.',
+  },
+  {
+    name: 'Vikas Malhotra',
+    rating: 5,
+    service: 'SGPC Repairing',
+    location: 'Green Enclave, Zirakpur',
+    comment:
+      'Prompt response and proper diagnostic assessment before starting the repair work. Fair pricing and dependable workmanship.',
+    isApproved: true,
+    isFeatured: true,
+    adminReply: 'Thank you Vikas for trusting us with your repair requirement!',
+  },
+];
+
+const businessInfoData = {
+  businessName: 'Professional Glass Cleaning Service',
+  phone: '8539842072',
+  whatsapp: '918539842072',
+  address: 'Green Enclave, Zirakpur, Punjab 140603, India',
+  serviceArea: 'Zirakpur, Mohali (SAS Nagar), Chandigarh, Tricity & selected areas of Punjab',
+  mapEmbedUrl: 'https://maps.google.com/maps?q=Green%20Enclave,%20Zirakpur,%20Punjab%20140603&t=&z=14&ie=UTF8&iwloc=&output=embed',
+  googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Professional+Glass+Cleaning+Green+Enclave+Zirakpur+Punjab+140603',
+  googleReviewsUrl: '',
+};
+
+async function autoSeedIfEmpty() {
+  try {
+    // 1. Admin
+    const adminCount = await Admin.countDocuments();
+    if (adminCount === 0) {
+      const email = (process.env.ADMIN_EMAIL || 'admin@professionalglasscleaning.com').toLowerCase().trim();
+      const password = process.env.ADMIN_PASSWORD || 'Admin@123456';
+      await Admin.create({
+        name: 'Primary Admin',
+        email,
+        password,
+        role: 'superadmin',
+      });
+      console.log(`[SEED] Created default admin account: ${email}`);
+    }
+
+    // 2. Services
+    const serviceCount = await Service.countDocuments();
+    if (serviceCount === 0) {
+      await Service.insertMany(services);
+      console.log(`[SEED] Auto-seeded ${services.length} services to database.`);
+    }
+
+    // 3. Locations
+    const locationCount = await Location.countDocuments();
+    if (locationCount === 0) {
+      await Location.insertMany(locations);
+      console.log(`[SEED] Auto-seeded ${locations.length} locations to database.`);
+    }
+
+    // 4. FAQs
+    const faqCount = await Faq.countDocuments();
+    if (faqCount === 0) {
+      await Faq.insertMany(faqs);
+      console.log(`[SEED] Auto-seeded ${faqs.length} FAQs to database.`);
+    }
+
+    // 5. Gallery
+    const galleryCount = await Gallery.countDocuments();
+    if (galleryCount === 0) {
+      await Gallery.insertMany(galleryImages);
+      console.log(`[SEED] Auto-seeded ${galleryImages.length} gallery images to database.`);
+    }
+
+    // 6. SEO Pages
+    const seoCount = await SEOPage.countDocuments();
+    if (seoCount === 0) {
+      await SEOPage.insertMany(seoPages);
+      console.log(`[SEED] Auto-seeded ${seoPages.length} SEO pages to database.`);
+    }
+
+    // 7. Reviews
+    const reviewCount = await Review.countDocuments();
+    if (reviewCount === 0) {
+      await Review.insertMany(initialReviews);
+      console.log(`[SEED] Auto-seeded ${initialReviews.length} reviews to database.`);
+    }
+
+    // 8. Business Info
+    const infoCount = await BusinessInfo.countDocuments();
+    if (infoCount === 0) {
+      await BusinessInfo.create(businessInfoData);
+      console.log(`[SEED] Auto-seeded Business Information to database.`);
+    }
+  } catch (err) {
+    console.error('[SEED ERROR] autoSeedIfEmpty error:', err.message);
+  }
+}
+
+async function forceSeedAll() {
+  // Overwrites / Re-seeds all catalog collections
+  await Service.deleteMany({});
+  await Service.insertMany(services);
+
+  await Location.deleteMany({});
+  await Location.insertMany(locations);
+
+  await Faq.deleteMany({});
+  await Faq.insertMany(faqs);
+
+  await Gallery.deleteMany({});
+  await Gallery.insertMany(galleryImages);
+
+  await SEOPage.deleteMany({});
+  await SEOPage.insertMany(seoPages);
+
+  await Review.deleteMany({});
+  await Review.insertMany(initialReviews);
+
+  const existingInfo = await BusinessInfo.findOne();
+  if (!existingInfo) {
+    await BusinessInfo.create(businessInfoData);
+  } else {
+    await BusinessInfo.updateOne({}, businessInfoData);
+  }
+
+  return {
+    services: services.length,
+    locations: locations.length,
+    faqs: faqs.length,
+    gallery: galleryImages.length,
+    seo: seoPages.length,
+    reviews: initialReviews.length,
+  };
+}
+
+module.exports = {
+  services,
+  locations,
+  faqs,
+  galleryImages,
+  seoPages,
+  initialReviews,
+  businessInfoData,
+  autoSeedIfEmpty,
+  forceSeedAll,
+};

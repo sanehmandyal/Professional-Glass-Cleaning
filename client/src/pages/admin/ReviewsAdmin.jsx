@@ -30,12 +30,13 @@ export default function ReviewsAdmin() {
     try {
       setLoading(true);
       const res = await apiClient.get('/reviews/admin/all');
-      if (res.data?.success && res.data.data) {
+      if (res.data?.success && res.data.data && res.data.data.length > 0) {
         setReviews(res.data.data);
+      } else {
+        setReviews(FALLBACK_REVIEWS);
       }
     } catch (err) {
       console.warn('Backend reviews offline, using fallback:', err.message);
-      // For standalone preview, populate initial fallback reviews
       setReviews(FALLBACK_REVIEWS);
     } finally {
       setLoading(false);

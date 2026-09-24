@@ -12,6 +12,9 @@ import {
   AlertCircle,
   Users,
   Star,
+  RefreshCw,
+  Database,
+  CheckCircle2,
 } from 'lucide-react';
 import apiClient from '../../services/api';
 
@@ -28,8 +31,11 @@ export default function Dashboard() {
   });
   const [recentEnquiries, setRecentEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncMsg, setSyncMsg] = useState(null);
 
-  useEffect(() => {
+  const fetchDashboardData = () => {
+    setLoading(true);
     Promise.allSettled([
       apiClient.get('/enquiries'),
       apiClient.get('/services?all=true'),
@@ -67,18 +73,74 @@ export default function Dashboard() {
 
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
   }, []);
+
+  const handleSyncAllData = async () => {
+    if (!window.confirm('Synchronize and seed all 14 services, 4 locations, FAQs, gallery, reviews, and business settings into the live database?')) {
+      return;
+    }
+    setSyncLoading(true);
+    setSyncMsg(null);
+    try {
+      const res = await apiClient.post('/admin/seed-all');
+      setSyncMsg({
+        type: 'success',
+        text: res.data?.message || 'Database synchronized successfully with all catalog items!',
+      });
+      fetchDashboardData();
+      setTimeout(() => setSyncMsg(null), 6000);
+    } catch (err) {
+      setSyncMsg({
+        type: 'error',
+        text: err.response?.data?.message || 'Failed to synchronize database.',
+      });
+    } finally {
+      setSyncLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
-          Admin Dashboard
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 mt-1">
-          Operations overview, new leads pipeline, and service catalog management.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
+            Admin Dashboard
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Operations overview, lead pipeline, and full website content management.
+          </p>
+        </div>
+
+        <button
+          onClick={handleSyncAllData}
+          disabled={syncLoading}
+          className="px-4 py-2.5 rounded-xl text-xs font-bold bg-brand-500 hover:bg-brand-600 text-white flex items-center gap-2 shadow-sm cursor-pointer disabled:opacity-50 transition-all self-start sm:self-auto"
+        >
+          <RefreshCw className={`w-4 h-4 ${syncLoading ? 'animate-spin' : ''}`} />
+          <span>{syncLoading ? 'Synchronizing DB...' : 'Sync Website Data to Live DB'}</span>
+        </button>
       </div>
+
+      {syncMsg && (
+        <div
+          className={`p-4 rounded-2xl text-xs font-semibold flex items-center gap-2.5 ${
+            syncMsg.type === 'success'
+              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+              : 'bg-rose-50 text-rose-800 border border-rose-200'
+          }`}
+        >
+          {syncMsg.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+          )}
+          <span>{syncMsg.text}</span>
+        </div>
+      )}
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

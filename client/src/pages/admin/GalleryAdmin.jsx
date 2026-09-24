@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trash2, Plus, Image, CheckCircle2 } from 'lucide-react';
 import apiClient from '../../services/api';
+import { FALLBACK_GALLERY } from '../../data/fallbackData';
 
 const categories = [
   'Glass Cleaning',
@@ -27,9 +28,16 @@ export default function GalleryAdmin() {
     apiClient
       .get('/gallery')
       .then((res) => {
-        if (res.data?.data) setItems(res.data.data);
+        if (res.data?.data && res.data.data.length > 0) {
+          setItems(res.data.data);
+        } else {
+          setItems(FALLBACK_GALLERY);
+        }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        setItems(FALLBACK_GALLERY);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -48,10 +56,14 @@ export default function GalleryAdmin() {
     }
   };
 
-  const remove = async (id) => {
-    if (!window.confirm('Delete this gallery photo?')) return;
+  const remove = async (item) => {
+    if (!window.confirm(`Delete "${item.title}" from gallery?`)) return;
     try {
-      await apiClient.delete(`/gallery/${id}`);
+      if (item._id && /^[0-9a-fA-F]{24}$/.test(item._id)) {
+        await apiClient.delete(`/gallery/${item._id}`);
+      } else {
+        setItems((prev) => prev.filter((i) => (i._id || i.imageUrl) !== (item._id || item.imageUrl)));
+      }
       load();
     } catch (err) {
       alert('Error deleting image');
@@ -149,7 +161,7 @@ export default function GalleryAdmin() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {items.map((item) => (
           <div
-            key={item._id}
+            key={item._id || item.imageUrl}
             className="glass-panel rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm flex flex-col justify-between"
           >
             <div className="relative aspect-4/3 bg-slate-100">
@@ -178,7 +190,7 @@ export default function GalleryAdmin() {
               </div>
 
               <button
-                onClick={() => remove(item._id)}
+                onClick={() => remove(item)}
                 className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors"
                 title="Delete Photo"
               >
