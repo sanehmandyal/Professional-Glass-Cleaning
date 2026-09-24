@@ -15,12 +15,16 @@ export default function Services() {
   const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
+    let mounted = true;
     apiClient
       .get('/services')
       .then((res) => {
-        if (res.data?.data?.length > 0) {
+        if (mounted && res.data?.data?.length > 0) {
           const apiMap = new Map(res.data.data.map((s) => [s.slug, s]));
-          const merged = FALLBACK_SERVICES.map((fb) => apiMap.get(fb.slug) || fb);
+          const merged = FALLBACK_SERVICES.map((fb) => {
+            const fromApi = apiMap.get(fb.slug);
+            return fromApi ? { ...fb, ...fromApi } : fb;
+          });
           res.data.data.forEach((s) => {
             if (!FALLBACK_SERVICES.some((fb) => fb.slug === s.slug)) {
               merged.push(s);
@@ -30,6 +34,9 @@ export default function Services() {
         }
       })
       .catch(() => {});
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const filteredServices =

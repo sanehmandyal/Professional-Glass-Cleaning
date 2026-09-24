@@ -74,28 +74,37 @@ const CDN_FALLBACKS = {
 
 export default function ServiceCard({ service, onEnquireClick }) {
   const IconComponent = ICON_MAP[service.icon] || Sparkles;
-  const imageSrc =
+  const [imgSrc, setImgSrc] = useState(
     service.image && typeof service.image === 'string' && service.image.trim()
       ? service.image
-      : DEFAULT_IMAGES[service.slug] || CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning'];
+      : DEFAULT_IMAGES[service.slug] || CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning']
+  );
+
+  useEffect(() => {
+    if (service.image && typeof service.image === 'string' && service.image.trim()) {
+      setImgSrc(service.image);
+    }
+  }, [service.image, service.slug]);
+
+  const handleImageError = () => {
+    const fallback = CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning'];
+    if (imgSrc !== fallback) {
+      setImgSrc(fallback);
+    }
+  };
 
   return (
     <div className="glass-panel glass-panel-hover rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col h-full group border border-white/80">
       {/* Top Image Container with Badge */}
       <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-100">
         <img
-          src={imageSrc}
+          key={imgSrc}
+          src={imgSrc}
           alt={`${service.title} in Zirakpur, Mohali & Chandigarh`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
           width="400"
           height="250"
-          onError={(e) => {
-            const fallback = CDN_FALLBACKS[service.slug] || CDN_FALLBACKS['glass-cleaning'];
-            if (e.target.src !== fallback) {
-              e.target.src = fallback;
-            }
-          }}
+          onError={handleImageError}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-black/20"></div>
 
