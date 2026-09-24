@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Plus,
   Trash2,
@@ -17,6 +17,7 @@ import {
   Eye,
   Sliders,
   Camera,
+  Upload,
 } from 'lucide-react';
 import apiClient from '../../services/api';
 import { FALLBACK_SERVICES } from '../../data/fallbackData';
@@ -73,6 +74,10 @@ export default function ServicesAdmin() {
   const [quickAfterUrl, setQuickAfterUrl] = useState('');
   const [quickImageLoading, setQuickImageLoading] = useState(false);
 
+  // File input refs for direct device image picking
+  const quickFileInputRef = useRef(null);
+  const formFileInputRef = useRef(null);
+
   const load = () => {
     setLoading(true);
     apiClient
@@ -112,6 +117,21 @@ export default function ServicesAdmin() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((f) => ({ ...f, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  // Direct file reader for uploading images from device
+  const handleFileChange = (e, callback) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image file size should be under 5MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      callback(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const startEdit = (service) => {
@@ -248,10 +268,10 @@ export default function ServicesAdmin() {
             Services & Photo Media Hub
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 tracking-tight">
-            Services & Image Management ({services.length} Total)
+            Services & Photos Management ({services.length} Total)
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Update service titles, procedures, pricing, primary showcase images, and Before/After photos directly.
+            Change service cover images, upload new photos, select curated presets, or edit service procedures directly.
           </p>
         </div>
 
@@ -313,7 +333,7 @@ export default function ServicesAdmin() {
 
         <div className="text-xs font-medium text-slate-500 self-end sm:self-auto flex items-center gap-3">
           <span className="flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">
-            <Camera className="w-3.5 h-3.5" /> Direct Photo Control
+            <Camera className="w-3.5 h-3.5" /> Direct Photo Control (Upload or URL)
           </span>
           <span>
             Showing <span className="font-bold text-navy-900">{filteredServices.length}</span> of{' '}
@@ -336,16 +356,16 @@ export default function ServicesAdmin() {
               <div>
                 <h3 className="font-bold text-base text-navy-900 flex items-center gap-2">
                   <Camera className="w-4 h-4 text-brand-500" />
-                  Update Image: {quickImageTarget.title}
+                  Change Image: {quickImageTarget.title}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Update the primary cover photo or Before/After transformation images.
+                  Upload a photo from your computer, choose a preset, or enter an image URL.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setQuickImageTarget(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -370,27 +390,44 @@ export default function ServicesAdmin() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-xs font-bold text-navy-900">
-                  Primary Image URL (Path or CDN Link)
-                </label>
-                <input
-                  type="text"
-                  value={quickImageUrl}
-                  onChange={(e) => setQuickImageUrl(e.target.value)}
-                  placeholder="https://... or /images/services/..."
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-                <p className="text-[10px] text-slate-500">
-                  Paste any Cloudinary, Imgur, CDN URL, or local image path.
-                </p>
+              <div className="space-y-2.5">
+                <div>
+                  <label className="block text-xs font-bold text-navy-900 mb-1">
+                    Image URL or Path
+                  </label>
+                  <input
+                    type="text"
+                    value={quickImageUrl}
+                    onChange={(e) => setQuickImageUrl(e.target.value)}
+                    placeholder="https://... or /images/services/..."
+                    className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="file"
+                    ref={quickFileInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, (dataUrl) => setQuickImageUrl(dataUrl))}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => quickFileInputRef.current?.click()}
+                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Upload Image from Device</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Quick Presets Selection */}
             <div>
               <p className="text-xs font-bold text-navy-900 mb-2">Or Choose from Curated Service Photos:</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1 custom-scrollbar">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-44 overflow-y-auto p-1 custom-scrollbar">
                 {PRESET_SERVICE_IMAGES.map((preset) => (
                   <button
                     key={preset.url}
@@ -556,20 +593,45 @@ export default function ServicesAdmin() {
                   </div>
                 </div>
 
-                {/* Image Input & Presets */}
+                {/* Image Input, File Upload & Presets */}
                 <div className="md:col-span-8 space-y-2.5">
-                  <div>
-                    <label className="block text-[11px] font-bold text-navy-900 mb-1">
-                      Primary Image URL / Path *
-                    </label>
-                    <input
-                      name="image"
-                      value={form.image}
-                      onChange={handleChange}
-                      placeholder="/images/services/glass-cleaning.jpg or https://..."
-                      className="w-full px-3.5 py-2 rounded-xl text-xs border border-slate-300 bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none"
-                      required
-                    />
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <label className="block text-[11px] font-bold text-navy-900 mb-1">
+                        Image URL / File Path *
+                      </label>
+                      <input
+                        name="image"
+                        value={form.image}
+                        onChange={handleChange}
+                        placeholder="/images/services/glass-cleaning.jpg or https://..."
+                        className="w-full px-3 py-1.5 rounded-xl text-xs border border-slate-300 bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                        required
+                      />
+                    </div>
+
+                    <div className="shrink-0 pt-4">
+                      <input
+                        type="file"
+                        ref={formFileInputRef}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleFileChange(e, (dataUrl) =>
+                            setForm((prev) => ({ ...prev, image: dataUrl }))
+                          )
+                        }
+                      />
+                      <button
+                        type="button"
+                        onClick={() => formFileInputRef.current?.click()}
+                        className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                        title="Upload photo from device"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Upload File</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div>
