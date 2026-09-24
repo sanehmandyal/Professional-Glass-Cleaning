@@ -168,6 +168,10 @@ export default function GalleryAdmin() {
               <img
                 src={item.imageUrl}
                 alt={item.alt || item.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/services/glass-cleaning.jpg';
+                }}
                 className="w-full h-full object-cover"
               />
               <span

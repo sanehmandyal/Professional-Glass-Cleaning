@@ -887,7 +887,7 @@ const galleryImages = [
   {
     title: 'Commercial Facade Glass Cleaning',
     category: 'Commercial Cleaning',
-    imageUrl: '/images/gallery/commercial-glass-cleaning-mohali.webp',
+    imageUrl: '/images/services/commercial-glass-cleaning.jpg',
     alt: 'Technicians cleaning commercial building glass facade in Mohali',
     isDemo: true,
     order: 1,
@@ -895,7 +895,7 @@ const galleryImages = [
   {
     title: 'High-Rise Balcony Glass Cleaning',
     category: 'Glass Cleaning',
-    imageUrl: '/images/gallery/professional-glass-cleaning-zirakpur.webp',
+    imageUrl: '/images/services/glass-cleaning.jpg',
     alt: 'Crystal clear residential balcony glass cleaning in Zirakpur society',
     isDemo: true,
     order: 2,
@@ -903,7 +903,7 @@ const galleryImages = [
   {
     title: 'Silicone Sealant Replacement on Window Joint',
     category: 'Silicone Repair',
-    imageUrl: '/images/gallery/silicone-repair-zirakpur.webp',
+    imageUrl: '/images/services/silicone-repair.jpg',
     alt: 'Neat architectural silicone caulking around window glass frame in Zirakpur',
     isDemo: true,
     order: 3,
@@ -911,7 +911,7 @@ const galleryImages = [
   {
     title: 'Commercial Glass Door Hardware & Hinge Repair',
     category: 'Glass Repair',
-    imageUrl: '/images/gallery/glass-repair-chandigarh.webp',
+    imageUrl: '/images/services/glass-repair.jpg',
     alt: 'Technician aligning patch fitting and floor spring on glass door in Chandigarh',
     isDemo: true,
     order: 4,
@@ -919,7 +919,7 @@ const galleryImages = [
   {
     title: 'Overhead Water Tank High-Pressure Wash',
     category: 'Water Tank Cleaning',
-    imageUrl: '/images/gallery/water-tank-cleaning-mohali.webp',
+    imageUrl: '/images/services/water-tank-cleaning.jpg',
     alt: 'High pressure hygienic water tank cleaning in Mohali',
     isDemo: true,
     order: 5,
@@ -927,7 +927,7 @@ const galleryImages = [
   {
     title: 'Retail Showroom Storefront Window Polishing',
     category: 'Commercial Cleaning',
-    imageUrl: '/images/gallery/shop-showroom-glass-cleaning-chandigarh.webp',
+    imageUrl: '/images/services/shop-glass-cleaning.jpg',
     alt: 'Spotless retail showroom glass storefront cleaning in Chandigarh',
     isDemo: true,
     order: 6,
@@ -935,7 +935,7 @@ const galleryImages = [
   {
     title: 'Residential Villa French Window Cleaning',
     category: 'Residential Cleaning',
-    imageUrl: '/images/gallery/residential-glass-cleaning-zirakpur.webp',
+    imageUrl: '/images/services/residential-glass-cleaning.jpg',
     alt: 'Residential window glass cleaning in Zirakpur home',
     isDemo: true,
     order: 7,
@@ -943,7 +943,7 @@ const galleryImages = [
   {
     title: 'Corporate Office Glass Partition Care',
     category: 'Commercial Cleaning',
-    imageUrl: '/images/gallery/office-glass-cleaning-mohali.webp',
+    imageUrl: '/images/services/office-glass-cleaning.jpg',
     alt: 'Clean glass cabin partitions in corporate office in Mohali',
     isDemo: true,
     order: 8,
