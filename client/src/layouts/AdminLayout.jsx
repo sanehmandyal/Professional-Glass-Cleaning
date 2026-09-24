@@ -9,8 +9,10 @@ export default function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-surface-200">
       {/* Desktop Sidebar */}
-      <div className="hidden md:block">
-        <AdminSidebar />
+      <div className="hidden md:block shrink-0">
+        <div className="sticky top-0 h-screen">
+          <AdminSidebar />
+        </div>
       </div>
 
       {/* Mobile Drawer */}
