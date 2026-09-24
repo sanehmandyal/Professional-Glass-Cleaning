@@ -17,8 +17,10 @@ import ContactForm from '../components/common/ContactForm';
 import FAQAccordion from '../components/common/FAQAccordion';
 import { FALLBACK_LOCATIONS, FALLBACK_SERVICES } from '../data/fallbackData';
 import apiClient from '../services/api';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function LocationDetails() {
+  const { business } = useBusiness();
   const { slug } = useParams();
   const navigate = useNavigate();
   const [locationData, setLocationData] = useState(null);
@@ -101,20 +103,18 @@ export default function LocationDetails() {
               {/* CTAs */}
               <div className="pt-3 flex flex-wrap items-center gap-3">
                 <a
-                  href="tel:+918539842072"
-                  className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass flex items-center gap-2 text-sm"
+                  href={business.phoneHref}
+                  className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass flex items-center gap-2 text-sm cursor-pointer"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>Call 8539842072</span>
+                  <span>Call {business.phone}</span>
                 </a>
 
                 <a
-                  href={`https://wa.me/918539842072?text=${encodeURIComponent(
-                    `Hello, I would like to enquire about glass cleaning / repair services in ${locationData.name}.`
-                  )}`}
+                  href={business.whatsappLink(`Hello, I would like to enquire about glass cleaning / repair services in ${locationData.name}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center gap-2 text-sm"
+                  className="py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center gap-2 text-sm cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600" />
                   <span>WhatsApp Enquiry</span>
@@ -233,10 +233,10 @@ export default function LocationDetails() {
                 Direct Location Helpline
               </p>
               <a
-                href="tel:+918539842072"
+                href={business.phoneHref}
                 className="text-xl font-extrabold text-brand-600 hover:underline block"
               >
-                8539842072
+                {business.phoneDisplay || business.phone}
               </a>
               <p className="text-[11px] text-slate-500">
                 Call now for same-day booking or quotation in {locationData.name}.

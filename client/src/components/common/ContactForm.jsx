@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import apiClient from '../../services/api';
 import { Send, CheckCircle, AlertCircle, Phone, Calendar, MapPin, User, MessageSquare, Briefcase } from 'lucide-react';
+import { useBusiness } from '../../context/BusinessContext';
 
 const SERVICE_OPTIONS = [
   'Professional Glass Cleaning',
@@ -35,6 +36,7 @@ export default function ContactForm({
   title = 'Request a Fast Quotation / Service Enquiry',
   subtitle = 'Fill in your details below and our service supervisor will get back to you promptly.',
 }) {
+  const { business } = useBusiness();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -59,7 +61,7 @@ export default function ContactForm({
     if (!formData.phone.trim()) {
       errs.phone = 'Please enter your contact phone number';
     } else if (!indianPhoneRegex.test(cleanPhone)) {
-      errs.phone = 'Please enter a valid 10-digit Indian phone number (e.g. 8539842072)';
+      errs.phone = `Please enter a valid 10-digit Indian phone number (e.g. ${business.phone})`;
     }
 
     if (!formData.service.trim()) errs.service = 'Please select a required service';
@@ -114,7 +116,7 @@ export default function ContactForm({
     } catch (err) {
       console.error('Enquiry submission error:', err);
       setSubmitStatus('error');
-      setResponseMsg('Something went wrong. Please call us directly at 8539842072.');
+      setResponseMsg(`Something went wrong. Please call us directly at ${business.phone}.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -137,8 +139,8 @@ export default function ContactForm({
             <p className="font-semibold text-emerald-900">{responseMsg}</p>
             <p className="text-xs text-emerald-700 mt-1">
               Need immediate urgent assistance? Call us directly on{' '}
-              <a href="tel:+918539842072" className="underline font-bold">
-                8539842072
+              <a href={business.phoneHref} className="underline font-bold">
+                {business.phoneDisplay || business.phone}
               </a>
               .
             </p>
@@ -153,8 +155,8 @@ export default function ContactForm({
             <p className="font-semibold text-rose-900">{responseMsg}</p>
             <p className="text-xs text-rose-700 mt-1">
               Or connect instantly on WhatsApp at{' '}
-              <a href="https://wa.me/918539842072" target="_blank" rel="noopener noreferrer" className="underline font-bold">
-                +91 8539842072
+              <a href={business.whatsappLink()} target="_blank" rel="noopener noreferrer" className="underline font-bold">
+                {business.phoneDisplay || business.phone}
               </a>
               .
             </p>

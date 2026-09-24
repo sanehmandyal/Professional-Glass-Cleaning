@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function WhatsAppButton({
-  phoneNumber = '918539842072',
+  phoneNumber,
   serviceName = '',
   locationName = '',
   customMessage = '',
 }) {
+  const { business } = useBusiness();
   const [isOpen, setIsOpen] = useState(false);
 
+  const activeWhatsapp = phoneNumber || business.whatsappNumber || '918539842072';
+
   // Generate dynamic contextual message
-  let defaultText =
-    'Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.';
-  
+  let defaultText = `Hello, I found ${business.businessName} online. I would like to enquire about your services.`;
+
   if (serviceName && locationName) {
     defaultText = `Hello, I would like to enquire about ${serviceName} in ${locationName}. Please share details and pricing.`;
   } else if (serviceName) {
@@ -22,7 +25,7 @@ export default function WhatsAppButton({
   }
 
   const finalMessage = customMessage || defaultText;
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(finalMessage)}`;
+  const whatsappUrl = `https://wa.me/${activeWhatsapp}?text=${encodeURIComponent(finalMessage)}`;
 
   return (
     <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex flex-col items-end">
@@ -41,7 +44,7 @@ export default function WhatsAppButton({
               WA
             </div>
             <div>
-              <p className="font-bold text-xs text-emerald-400">Professional Glass Cleaning</p>
+              <p className="font-bold text-xs text-emerald-400">{business.businessName}</p>
               <p className="text-[10px] text-slate-300">Typically replies instantly</p>
             </div>
           </div>
@@ -71,11 +74,8 @@ export default function WhatsAppButton({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => {
-            // on mobile just open directly, on desktop user can also click or see tooltip
-          }}
-          className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-glass-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300 group"
-          aria-label="Chat with us on WhatsApp at 8539842072"
+          className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-glass-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-300 group cursor-pointer"
+          aria-label={`Chat with us on WhatsApp at ${activeWhatsapp}`}
         >
           <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 fill-current transition-transform group-hover:rotate-12" />
         </a>

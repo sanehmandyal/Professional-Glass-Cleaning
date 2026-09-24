@@ -1,13 +1,20 @@
 import React from 'react';
 import { PhoneCall } from 'lucide-react';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function CallButton({
-  phoneNumber = '8539842072',
-  label = 'Call 8539842072',
+  phoneNumber,
+  label,
   variant = 'primary',
   className = '',
   size = 'md',
 }) {
+  const { business } = useBusiness();
+
+  const activeNumber = phoneNumber || business.phone || '8539842072';
+  const displayLabel = label || `Call ${activeNumber}`;
+  const phoneHref = phoneNumber ? `tel:+91${phoneNumber.replace(/\D/g, '')}` : business.phoneHref;
+
   const isPrimary = variant === 'primary';
   const isOutline = variant === 'outline';
   const isDark = variant === 'dark';
@@ -30,12 +37,12 @@ export default function CallButton({
 
   return (
     <a
-      href={`tel:+91${phoneNumber.replace(/\D/g, '')}`}
-      className={`inline-flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-500 ${sizeClasses} ${colorClasses} ${className}`}
-      aria-label={`Call Professional Glass Cleaning at ${phoneNumber}`}
+      href={phoneHref}
+      className={`inline-flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer ${sizeClasses} ${colorClasses} ${className}`}
+      aria-label={`Call ${business.businessName} at ${activeNumber}`}
     >
       <PhoneCall className={size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} />
-      <span>{label}</span>
+      <span>{displayLabel}</span>
     </a>
   );
 }

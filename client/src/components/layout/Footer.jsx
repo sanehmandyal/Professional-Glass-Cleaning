@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, MapPin, MessageCircle, ExternalLink, ShieldCheck, ChevronRight, Heart } from 'lucide-react';
 import Logo from '../Logo';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function Footer() {
+  const { business } = useBusiness();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -18,25 +20,25 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Logo variant="footer" />
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              Professional glass cleaning and repair services serving Zirakpur and selected nearby areas. Dedicated to streak-free clarity, authentic repairs, and dependable customer service.
+              {business.businessName} serving Zirakpur and selected nearby areas. Dedicated to streak-free clarity, authentic repairs, and dependable customer service.
             </p>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 max-w-md">
               <div className="flex items-start gap-2.5 text-xs text-slate-300">
                 <MapPin className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
-                <span>Green Enclave, Zirakpur, Punjab 140603, India</span>
+                <span>{business.address}</span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-slate-300">
                 <Phone className="w-4 h-4 text-brand-400 shrink-0" />
-                <a href="tel:+918539842072" className="hover:text-white font-bold text-brand-300 transition-colors">
-                  +91 8539842072
+                <a href={business.phoneHref} className="hover:text-white font-bold text-brand-300 transition-colors">
+                  {business.phoneDisplay || business.phone}
                 </a>
               </div>
             </div>
 
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://wa.me/918539842072"
+                href={business.whatsappLink('Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
@@ -45,7 +47,7 @@ export default function Footer() {
                 <span>WhatsApp Us</span>
               </a>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Professional+Glass+Cleaning+Green+Enclave+Zirakpur+Punjab+140603"
+                href={business.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-300 border border-white/15 hover:bg-white/20 transition-colors"
@@ -198,14 +200,14 @@ export default function Footer() {
 
         {/* Bottom copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© {currentYear} Professional Glass Cleaning Service. All rights reserved.</p>
+          <p>© {currentYear} {business.businessName}. All rights reserved.</p>
           <p className="flex items-center gap-1">
             <span>Primary Phone: </span>
-            <a href="tel:+918539842072" className="font-bold text-slate-300 hover:underline">
-              8539842072
+            <a href={business.phoneHref} className="font-bold text-slate-300 hover:underline">
+              {business.phone}
             </a>
             <span className="mx-1.5">•</span>
-            <span>Green Enclave, Zirakpur</span>
+            <span>{business.address.split(',')[0]}, {business.address.split(',')[1] || 'Zirakpur'}</span>
           </p>
         </div>
       </div>

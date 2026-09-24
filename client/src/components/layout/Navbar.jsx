@@ -15,10 +15,10 @@ import {
   Info,
   HelpCircle,
   Home,
-  CheckCircle2
 } from 'lucide-react';
 import Logo from '../Logo';
-import { BUSINESS, whatsappLink, DEFAULT_WHATSAPP_MESSAGE } from '../../utils/business';
+import { useBusiness } from '../../context/BusinessContext';
+import { DEFAULT_WHATSAPP_MESSAGE } from '../../utils/business';
 
 const NAV_LINKS = [
   { name: 'Home', path: '/' },
@@ -56,6 +56,7 @@ const PRIMARY_LOCATIONS = [
 ];
 
 export default function Navbar() {
+  const { business } = useBusiness();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
@@ -108,13 +109,30 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        isScrolled
-          ? 'glass-nav shadow-glass py-2 sm:py-2.5'
-          : 'bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 sm:py-3.5'
-      }`}
-    >
+    <>
+      {/* Dynamic Announcement Banner managed by Admin */}
+      {business.showAnnouncement && business.announcementText && (
+        <div className="bg-gradient-to-r from-navy-950 via-brand-900 to-navy-950 text-white text-xs py-2 px-4 border-b border-brand-500/20 text-center relative z-50">
+          <div className="container-custom flex items-center justify-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-pulse" />
+            <span className="font-semibold text-slate-100">{business.announcementText}</span>
+            <a
+              href={business.phoneHref}
+              className="underline font-bold text-amber-300 hover:text-white ml-2 text-[11px]"
+            >
+              Call {business.phone}
+            </a>
+          </div>
+        </div>
+      )}
+
+      <header
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? 'glass-nav shadow-glass py-2 sm:py-2.5'
+            : 'bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 sm:py-3.5'
+        }`}
+      >
       <div className="container-custom flex items-center justify-between">
         {/* Brand Logo */}
         <Logo variant="full" />
@@ -254,11 +272,11 @@ export default function Navbar() {
         {/* Desktop CTA Buttons */}
         <div className="hidden lg:flex items-center gap-3">
           <a
-            href={BUSINESS.phoneHref}
+            href={business.phoneHref}
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors border border-brand-200"
           >
             <Phone className="w-3.5 h-3.5" />
-            <span>{BUSINESS.phone}</span>
+            <span>{business.phone}</span>
           </a>
 
           <Link
@@ -273,7 +291,7 @@ export default function Navbar() {
         {/* Mobile Hamburger Button with comfortable touch padding */}
         <div className="flex items-center gap-2 lg:hidden">
           <a
-            href={BUSINESS.phoneHref}
+            href={business.phoneHref}
             className="p-2 rounded-xl bg-brand-50 text-brand-600 border border-brand-200 flex items-center justify-center"
             aria-label="Call Business Phone"
           >
@@ -330,11 +348,11 @@ export default function Navbar() {
                 </div>
                 <div>
                   <p className="text-[10px] text-brand-100 font-medium uppercase tracking-wider">Fast Service Hotline</p>
-                  <p className="text-sm font-bold tracking-tight">{BUSINESS.phone}</p>
+                  <p className="text-sm font-bold tracking-tight">{business.phone}</p>
                 </div>
               </div>
               <a
-                href={BUSINESS.phoneHref}
+                href={business.phoneHref}
                 className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-brand-700 hover:bg-brand-50 transition-colors shadow-sm"
               >
                 Call Now
@@ -525,14 +543,14 @@ export default function Navbar() {
             <div className="p-4 border-t border-slate-200 bg-slate-50/80 space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <a
-                  href={BUSINESS.phoneHref}
+                  href={business.phoneHref}
                   className="py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-navy-900 hover:bg-brand-50 hover:text-brand-600 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-brand-600" />
                   <span>Call Direct</span>
                 </a>
                 <a
-                  href={whatsappLink(DEFAULT_WHATSAPP_MESSAGE)}
+                  href={business.whatsappLink(DEFAULT_WHATSAPP_MESSAGE)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2.5 px-3 rounded-xl bg-[#25D366] text-white hover:bg-[#20bd5a] font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
@@ -552,12 +570,13 @@ export default function Navbar() {
               </Link>
 
               <p className="text-[11px] text-center text-slate-500 pt-1">
-                📍 {BUSINESS.address}
+                📍 {business.address}
               </p>
             </div>
           </div>
         </div>
       )}
     </header>
+    </>
   );
 }

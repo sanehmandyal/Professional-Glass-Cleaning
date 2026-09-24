@@ -15,8 +15,10 @@ import {
 import SEO from '../components/seo/SEO';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import MapSection from '../components/common/MapSection';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function About() {
+  const { business } = useBusiness();
   const breadcrumbs = [{ name: 'About Us', url: '/about' }];
 
   return (
@@ -86,7 +88,7 @@ export default function About() {
                   <MapPin className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-white block">Physical Location:</strong>
-                    <span>Green Enclave, Zirakpur, Punjab 140603, India</span>
+                    <span>{business.address}</span>
                   </div>
                 </div>
 
@@ -94,8 +96,8 @@ export default function About() {
                   <Phone className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-white block">Owner Phone Helpline:</strong>
-                    <a href="tel:+918539842072" className="text-brand-300 hover:underline font-bold">
-                      +91 8539842072
+                    <a href={business.phoneHref} className="text-brand-300 hover:underline font-bold">
+                      {business.phoneDisplay || business.phone}
                     </a>
                   </div>
                 </div>
@@ -104,8 +106,8 @@ export default function About() {
                   <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-white block">WhatsApp Channel:</strong>
-                    <a href="https://wa.me/918539842072" target="_blank" rel="noopener noreferrer" className="text-emerald-300 hover:underline">
-                      +91 8539842072
+                    <a href={business.whatsappLink()} target="_blank" rel="noopener noreferrer" className="text-emerald-300 hover:underline">
+                      {business.phoneDisplay || business.phone}
                     </a>
                   </div>
                 </div>
@@ -113,7 +115,7 @@ export default function About() {
 
               <div className="pt-2 border-t border-white/10">
                 <p className="text-[11px] text-slate-400">
-                  Daily Service Hours: Monday – Sunday (8:00 AM – 8:00 PM)
+                  Daily Service Hours: {business.workingHours || 'Monday – Sunday (8:00 AM – 8:00 PM)'}
                 </p>
               </div>
             </div>

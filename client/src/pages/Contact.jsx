@@ -5,8 +5,10 @@ import SEO from '../components/seo/SEO';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import ContactForm from '../components/common/ContactForm';
 import MapSection from '../components/common/MapSection';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function Contact() {
+  const { business } = useBusiness();
   const [searchParams] = useSearchParams();
   const initialService = searchParams.get('service') || '';
 
@@ -15,8 +17,8 @@ export default function Contact() {
   return (
     <>
       <SEO
-        title="Contact Professional Glass Cleaning Service | Zirakpur & Tricity"
-        description="Contact Professional Glass Cleaning Service in Green Enclave, Zirakpur. Call or WhatsApp 8539842072 for quick service enquiries, quotations, and directions."
+        title={`Contact ${business.businessName} | Zirakpur & Tricity`}
+        description={`Contact ${business.businessName} in ${business.address}. Call or WhatsApp ${business.phone} for quick service enquiries, quotations, and directions.`}
         canonical="https://professionalglasscleaningservice.com/contact"
         breadcrumbs={breadcrumbs}
       />
@@ -30,10 +32,10 @@ export default function Contact() {
             Get In Touch
           </span>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-navy-950 tracking-tight">
-            Contact Professional Glass Cleaning Service
+            Contact {business.businessName}
           </h1>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
-            Reach out directly for quotations, on-site inspections, or emergency service across Zirakpur, Mohali, Chandigarh, and selected Punjab regions.
+            Reach out directly for quotations, on-site inspections, or emergency service across {business.serviceArea}.
           </p>
         </div>
 
@@ -47,18 +49,18 @@ export default function Contact() {
               </div>
               <h3 className="font-bold text-base text-navy-900">Direct Phone Helpline</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Speak directly with the business owner.
+                Speak directly with our team & technicians.
               </p>
               <a
-                href="tel:+918539842072"
+                href={business.phoneHref}
                 className="text-lg font-extrabold text-brand-600 hover:underline block mt-2"
               >
-                +91 8539842072
+                {business.phoneDisplay || business.phone}
               </a>
             </div>
             <a
-              href="tel:+918539842072"
-              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-sm text-xs flex items-center justify-center gap-1.5"
+              href={business.phoneHref}
+              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-sm text-xs flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Call Now</span>
@@ -76,16 +78,14 @@ export default function Contact() {
                 Send site photos or request quick quotes.
               </p>
               <p className="text-lg font-extrabold text-emerald-600 block mt-2">
-                +91 8539842072
+                {business.phoneDisplay || business.phone}
               </p>
             </div>
             <a
-              href={`https://wa.me/918539842072?text=${encodeURIComponent(
-                'Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.'
-              )}`}
+              href={business.whatsappLink('Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 transition-colors text-xs flex items-center justify-center gap-1.5"
+              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 transition-colors text-xs flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5 fill-current" />
               <span>WhatsApp Us</span>
@@ -100,17 +100,17 @@ export default function Contact() {
               </div>
               <h3 className="font-bold text-base text-navy-900">Operating Base</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Green Enclave, Zirakpur, Punjab 140603, India
+                {business.address}
               </p>
               <p className="text-xs font-semibold text-slate-700 mt-2">
-                Serving Tricity & Nearby Punjab
+                {business.serviceArea}
               </p>
             </div>
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=Green+Enclave,+Zirakpur,+Punjab+140603"
+              href={business.directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-navy-900 bg-surface-200 hover:bg-surface-300 transition-colors border border-slate-300 text-xs flex items-center justify-center gap-1.5"
+              className="mt-4 py-2.5 px-4 rounded-xl font-bold text-navy-900 bg-surface-200 hover:bg-surface-300 transition-colors border border-slate-300 text-xs flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Navigation className="w-3.5 h-3.5 text-brand-600" />
               <span>Get Directions</span>

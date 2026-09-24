@@ -19,8 +19,10 @@ import {
   Sparkles,
 } from 'lucide-react';
 import apiClient from '../../services/api';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function SettingsAdmin() {
+  const { updateBusinessInfo } = useBusiness();
   const [activeTab, setActiveTab] = useState('security');
 
   // Password state
@@ -158,10 +160,10 @@ export default function SettingsAdmin() {
     setSiteLoading(true);
 
     try {
-      await apiClient.put('/business-info', siteForm);
+      await updateBusinessInfo(siteForm);
       setSiteMsg({
         type: 'success',
-        text: 'UI settings & Business Information updated successfully!',
+        text: 'UI settings & Business Information updated successfully! Website is synchronized.',
       });
     } catch (err) {
       setSiteMsg({

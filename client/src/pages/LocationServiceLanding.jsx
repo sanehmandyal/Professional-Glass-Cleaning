@@ -16,8 +16,10 @@ import Breadcrumbs from '../components/common/Breadcrumbs';
 import ContactForm from '../components/common/ContactForm';
 import FAQAccordion from '../components/common/FAQAccordion';
 import { FALLBACK_SERVICES, FALLBACK_LOCATIONS } from '../data/fallbackData';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function LocationServiceLanding() {
+  const { business } = useBusiness();
   const { city, serviceSlug } = useParams();
   const navigate = useNavigate();
 
@@ -95,20 +97,18 @@ export default function LocationServiceLanding() {
               {/* CTAs */}
               <div className="pt-3 flex flex-wrap items-center gap-3">
                 <a
-                  href="tel:+918539842072"
-                  className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass flex items-center gap-2 text-sm"
+                  href={business.phoneHref}
+                  className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass flex items-center gap-2 text-sm cursor-pointer"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>Call 8539842072</span>
+                  <span>Call {business.phone}</span>
                 </a>
 
                 <a
-                  href={`https://wa.me/918539842072?text=${encodeURIComponent(
-                    `Hello, I need ${serviceName} in ${cityName}. Please share details.`
-                  )}`}
+                  href={business.whatsappLink(`Hello, I need ${serviceName} in ${cityName}. Please share details.`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center gap-2 text-sm"
+                  className="py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center gap-2 text-sm cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600" />
                   <span>WhatsApp Enquire</span>
@@ -187,10 +187,10 @@ export default function LocationServiceLanding() {
                 Call our supervisor directly for quick scheduling in {cityName}.
               </p>
               <a
-                href="tel:+918539842072"
-                className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm block shadow-sm"
+                href={business.phoneHref}
+                className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm block shadow-sm cursor-pointer"
               >
-                Call 8539842072
+                Call {business.phone}
               </a>
             </div>
 

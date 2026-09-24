@@ -1,9 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
+import { useBusiness } from '../../context/BusinessContext';
 
-const SITE_NAME = 'Professional Glass Cleaning Service';
-const DEFAULT_PHONE = '+918539842072';
 const DEFAULT_URL = 'https://professionalglasscleaningservice.com';
 const DEFAULT_OG_IMAGE = 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80';
 
@@ -19,32 +18,34 @@ export default function SEO({
   service,
   faqs,
 }) {
+  const { business } = useBusiness();
   const routerLocation = useLocation();
   const currentPath = routerLocation.pathname;
   const canonicalUrl = canonical || `${DEFAULT_URL}${currentPath}`;
+  const SITE_NAME = business.businessName || 'Professional Glass Cleaning Service';
   const metaTitle = title
     ? `${title}`
-    : 'Professional Glass Cleaning Service in Zirakpur | Glass Repair & Cleaning';
+    : `${SITE_NAME} in Zirakpur | Glass Repair & Cleaning`;
   const metaDescription =
     description ||
-    'Professional glass cleaning, glass repair, silicone repair, SGPC repairing and water tank cleaning services in Zirakpur, Mohali and Chandigarh. Call 8539842072 for service enquiries.';
+    `Professional glass cleaning, glass repair, silicone repair, SGPC repairing and water tank cleaning services in Zirakpur, Mohali and Chandigarh. Call ${business.phone} for service enquiries.`;
   const shareImage = ogImage || DEFAULT_OG_IMAGE;
 
-  // Base LocalBusiness JSON-LD schema (Strictly verified data, no fake reviews/awards)
+  // Base LocalBusiness JSON-LD schema
   const localBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': 'HomeAndConstructionBusiness',
     '@id': `${DEFAULT_URL}/#localbusiness`,
-    name: 'Professional Glass Cleaning Service',
-    legalName: 'Professional Glass Cleaning Service',
+    name: business.businessName,
+    legalName: business.businessName,
     url: DEFAULT_URL,
-    telephone: DEFAULT_PHONE,
+    telephone: business.phoneDisplay || `+91${business.phone}`,
     priceRange: '₹₹',
     image: shareImage,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Green Enclave',
-      addressLocality: 'Zirakpur',
+      streetAddress: business.address.split(',')[0] || 'Green Enclave',
+      addressLocality: business.address.split(',')[1]?.trim() || 'Zirakpur',
       addressRegion: 'Punjab',
       postalCode: '140603',
       addressCountry: 'IN',
@@ -81,8 +82,8 @@ export default function SEO({
       },
     ],
     sameAs: [
-      'https://wa.me/918539842072',
-      'https://www.google.com/maps/search/?api=1&query=Professional+Glass+Cleaning+Green+Enclave+Zirakpur+Punjab+140603',
+      business.whatsappLink(),
+      business.googleMapsUrl,
     ],
   };
 

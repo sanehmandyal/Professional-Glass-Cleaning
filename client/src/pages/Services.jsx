@@ -7,8 +7,10 @@ import ServiceCard from '../components/common/ServiceCard';
 import ContactForm from '../components/common/ContactForm';
 import { FALLBACK_SERVICES } from '../data/fallbackData';
 import apiClient from '../services/api';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function Services() {
+  const { business } = useBusiness();
   const [services, setServices] = useState(FALLBACK_SERVICES);
   const [activeFilter, setActiveFilter] = useState('All');
 
@@ -118,10 +120,10 @@ export default function Services() {
 
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
               <a
-                href="tel:+918539842072"
-                className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass text-center text-sm"
+                href={business.phoneHref}
+                className="py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-glass text-center text-sm cursor-pointer"
               >
-                Call 8539842072
+                Call {business.phone}
               </a>
               <Link
                 to="/contact"

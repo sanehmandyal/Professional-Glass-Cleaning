@@ -27,8 +27,10 @@ import FAQAccordion from '../components/common/FAQAccordion';
 import ReviewsSection from '../components/ReviewsSection';
 import { FALLBACK_SERVICES, FALLBACK_LOCATIONS, FALLBACK_FAQS } from '../data/fallbackData';
 import apiClient from '../services/api';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function Home() {
+  const { business } = useBusiness();
   const [services, setServices] = useState(FALLBACK_SERVICES);
   const [locations, setLocations] = useState(FALLBACK_LOCATIONS);
   const [faqs, setFaqs] = useState(FALLBACK_FAQS);
@@ -126,20 +128,18 @@ export default function Home() {
               {/* CTA Buttons */}
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <a
-                  href="tel:+918539842072"
-                  className="py-3.5 px-6 rounded-2xl font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-glass-hover transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base glass-shine"
+                  href={business.phoneHref}
+                  className="py-3.5 px-6 rounded-2xl font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-glass-hover transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base glass-shine cursor-pointer"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>Call 8539842072</span>
+                  <span>Call {business.phone}</span>
                 </a>
 
                 <a
-                  href={`https://wa.me/918539842072?text=${encodeURIComponent(
-                    'Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.'
-                  )}`}
+                  href={business.whatsappLink('Hello, I found Professional Glass Cleaning Service online. I would like to enquire about your services.')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-3.5 px-6 rounded-2xl font-bold text-emerald-800 bg-emerald-100/90 hover:bg-emerald-200 transition-all duration-200 border border-emerald-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="py-3.5 px-6 rounded-2xl font-bold text-emerald-800 bg-emerald-100/90 hover:bg-emerald-200 transition-all duration-200 border border-emerald-300 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4 fill-emerald-600 text-emerald-600" />
                   <span>WhatsApp Us</span>

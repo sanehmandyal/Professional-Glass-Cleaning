@@ -5,8 +5,10 @@ import Breadcrumbs from '../components/common/Breadcrumbs';
 import FAQAccordion from '../components/common/FAQAccordion';
 import { FALLBACK_FAQS } from '../data/fallbackData';
 import apiClient from '../services/api';
+import { useBusiness } from '../context/BusinessContext';
 
 export default function FAQs() {
+  const { business } = useBusiness();
   const [faqs, setFaqs] = useState(FALLBACK_FAQS);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -121,19 +123,17 @@ export default function FAQs() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <a
-              href="tel:+918539842072"
-              className="w-full sm:w-auto py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+              href={business.phoneHref}
+              className="w-full sm:w-auto py-3 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-sm flex items-center justify-center gap-2 text-sm cursor-pointer"
             >
               <Phone className="w-4 h-4" />
-              <span>Call 8539842072</span>
+              <span>Call {business.phone}</span>
             </a>
             <a
-              href={`https://wa.me/918539842072?text=${encodeURIComponent(
-                'Hello, I have a question regarding your services in Zirakpur / Tricity.'
-              )}`}
+              href={business.whatsappLink('Hello, I have a question regarding your services in Zirakpur / Tricity.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center justify-center gap-2 text-sm"
+              className="w-full sm:w-auto py-3 px-6 rounded-xl font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors border border-emerald-300 flex items-center justify-center gap-2 text-sm cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600" />
               <span>Ask on WhatsApp</span>

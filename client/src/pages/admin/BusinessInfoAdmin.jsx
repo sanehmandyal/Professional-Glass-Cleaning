@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Settings, Save, CheckCircle2, AlertCircle, Phone, MapPin } from 'lucide-react';
 import apiClient from '../../services/api';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function BusinessInfoAdmin() {
+  const { updateBusinessInfo } = useBusiness();
   const [form, setForm] = useState({
     businessName: 'Professional Glass Cleaning Service',
     phone: '8539842072',
@@ -30,7 +32,7 @@ export default function BusinessInfoAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await apiClient.put('/business-info', form);
+      await updateBusinessInfo(form);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
