@@ -111,16 +111,23 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => res.status(200).json({ success: true, message: 'Server is healthy' }));
 app.get('/api/health', (req, res) => res.status(200).json({ success: true, message: 'API is running' }));
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/enquiries', enquiryRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/locations', locationRoutes);
-app.use('/api/gallery', galleryRoutes);
-app.use('/api/faqs', faqRoutes);
-app.use('/api/business-info', businessInfoRoutes);
-app.use('/api/seo', seoRoutes);
-app.use('/api/reviews', reviewRoutes);
+// Routes - Mounted on both /api/* and /* for universal client compatibility
+const routes = [
+  ['/auth', authRoutes],
+  ['/enquiries', enquiryRoutes],
+  ['/services', serviceRoutes],
+  ['/locations', locationRoutes],
+  ['/gallery', galleryRoutes],
+  ['/faqs', faqRoutes],
+  ['/business-info', businessInfoRoutes],
+  ['/seo', seoRoutes],
+  ['/reviews', reviewRoutes],
+];
+
+routes.forEach(([routePath, router]) => {
+  app.use(`/api${routePath}`, router);
+  app.use(routePath, router);
+});
 
 app.use(notFound);
 app.use(errorHandler);
