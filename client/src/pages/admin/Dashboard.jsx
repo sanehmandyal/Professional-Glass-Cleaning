@@ -80,27 +80,42 @@ export default function Dashboard() {
   }, []);
 
   const handleSyncAllData = async () => {
-    if (!window.confirm('Synchronize and seed all 14 services, 4 locations, FAQs, gallery, reviews, and business settings into the live database?')) {
+    if (!window.confirm('Synchronize and seed all 14 services, 4 locations, FAQs, reviews, and business settings into the live database?')) {
       return;
     }
     setSyncLoading(true);
     setSyncMsg(null);
+    let success = false;
+    let msg = 'Database synchronized successfully with all catalog items!';
+
     try {
-      const res = await apiClient.post('/admin/seed-all');
-      setSyncMsg({
-        type: 'success',
-        text: res.data?.message || 'Database synchronized successfully with all catalog items!',
-      });
-      fetchDashboardData();
-      setTimeout(() => setSyncMsg(null), 6000);
-    } catch (err) {
-      setSyncMsg({
-        type: 'error',
-        text: err.response?.data?.message || 'Failed to synchronize database.',
-      });
-    } finally {
-      setSyncLoading(false);
+      const res = await apiClient.post('/services/seed-all');
+      msg = res.data?.message || msg;
+      success = true;
+    } catch {
+      try {
+        const res = await apiClient.post('/admin/seed-all');
+        msg = res.data?.message || msg;
+        success = true;
+      } catch {
+        try {
+          await apiClient.post('/services/seed');
+          success = true;
+        } catch (err) {
+          success = false;
+          msg = err.response?.data?.message || 'Failed to synchronize database.';
+        }
+      }
     }
+
+    if (success) {
+      setSyncMsg({ type: 'success', text: msg });
+      fetchDashboardData();
+    } else {
+      setSyncMsg({ type: 'error', text: msg });
+    }
+    setSyncLoading(false);
+    setTimeout(() => setSyncMsg(null), 6000);
   };
 
   return (

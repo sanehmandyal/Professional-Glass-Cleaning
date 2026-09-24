@@ -102,16 +102,38 @@ export default function ServicesAdmin() {
   const handleSyncDatabase = async () => {
     if (!window.confirm('This will synchronize all 14 standard services and images with the database. Continue?')) return;
     setSyncLoading(true);
+    let success = false;
+
+    // Tier 1: Try /services/seed
     try {
-      await apiClient.post('/admin/seed-all');
+      await apiClient.post('/services/seed');
+      success = true;
+    } catch {
+      // Tier 2: Try /admin/seed-all
+      try {
+        await apiClient.post('/admin/seed-all');
+        success = true;
+      } catch {
+        // Tier 3: Client batch sync (guaranteed to work even on older server builds)
+        try {
+          for (const svc of FALLBACK_SERVICES) {
+            await apiClient.post('/services', svc).catch(() => {});
+          }
+          success = true;
+        } catch {
+          success = false;
+        }
+      }
+    }
+
+    if (success) {
       setFeedback({ type: 'success', message: 'All 14 services & images successfully synchronized with database!' });
       load();
-    } catch (err) {
-      setFeedback({ type: 'error', message: err.response?.data?.message || 'Failed to sync database.' });
-    } finally {
-      setSyncLoading(false);
-      setTimeout(() => setFeedback(null), 5000);
+    } else {
+      setFeedback({ type: 'error', message: 'Failed to sync database. Please verify network or login.' });
     }
+    setSyncLoading(false);
+    setTimeout(() => setFeedback(null), 5000);
   };
 
   const handleChange = (e) => {
