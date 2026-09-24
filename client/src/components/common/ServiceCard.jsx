@@ -57,9 +57,10 @@ const DEFAULT_IMAGES = {
 
 export default function ServiceCard({ service, onEnquireClick }) {
   const IconComponent = ICON_MAP[service.icon] || Sparkles;
-  const imageSrc = service.image?.startsWith('http') || service.image?.startsWith('/')
-    ? service.image
-    : DEFAULT_IMAGES[service.slug] || DEFAULT_IMAGES['glass-cleaning'];
+  const imageSrc =
+    service.image && typeof service.image === 'string' && service.image.trim()
+      ? service.image
+      : DEFAULT_IMAGES[service.slug] || DEFAULT_IMAGES['glass-cleaning'];
 
   return (
     <div className="glass-panel glass-panel-hover rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col h-full group border border-white/80">
@@ -72,6 +73,10 @@ export default function ServiceCard({ service, onEnquireClick }) {
           loading="lazy"
           width="400"
           height="250"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = DEFAULT_IMAGES[service.slug] || '/images/services/glass-cleaning.jpg';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-black/20"></div>
 
