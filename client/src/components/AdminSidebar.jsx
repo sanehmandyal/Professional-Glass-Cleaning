@@ -34,10 +34,12 @@ export default function AdminSidebar({ onClose }) {
         {/* Brand Header */}
         <div className="p-4 border-b border-slate-800/80 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-400 p-0.5 shadow-md shrink-0 flex items-center justify-center">
-              <div className="w-full h-full bg-[#0b1329] rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-              </div>
+            <div className="w-9 h-9 rounded-xl bg-white p-0.5 shadow-md shrink-0 flex items-center justify-center ring-1 ring-white/20 overflow-hidden">
+              <img
+                src="/logo.jpg"
+                alt="Logo"
+                className="w-full h-full object-cover rounded-[8px]"
+              />
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-xs font-black text-white tracking-wider uppercase truncate">
